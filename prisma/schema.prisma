@@ -25,8 +25,8 @@ model Transaction {
   name      String
   type      TransactionType
   amount    Int
-  tag       Tag             @relation(fields: [tagId], references: [id])
-  tagId     String
+  tag       Tag?            @relation(fields: [tagId], references: [id])
+  tagId     String?
   boardId   String
   date      DateTime        @default(now())
   createdAt DateTime        @default(now())
