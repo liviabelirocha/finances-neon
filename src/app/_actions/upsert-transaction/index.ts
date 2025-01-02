@@ -13,6 +13,8 @@ export const upsertTransaction = async (params: {
   amount: number;
   boardId: string;
   tagId?: string;
+  installments?: number;
+  date: Date;
 }) => {
   upsertTransactionSchema.parse(params);
 
@@ -20,11 +22,25 @@ export const upsertTransaction = async (params: {
 
   if (!userId) throw new Error("Unauthorized");
 
-  await db.transaction.upsert({
-    where: { id: params.id },
-    update: { ...params },
-    create: { ...params },
-  });
+  if (params.installments && params.installments > 1) {
+    const amount = Math.ceil(params.amount / params.installments);
+
+    await db.transaction.createMany({
+      data: Array.from({ length: params.installments }).map((_, idx) => ({
+        name: `${params.name} (${idx + 1}/${params.installments})`,
+        type: params.type,
+        amount,
+        boardId: params.boardId,
+        date: params.date,
+      })),
+    });
+  } else {
+    await db.transaction.upsert({
+      where: { id: params.id },
+      update: { ...params },
+      create: { ...params },
+    });
+  }
 
   revalidatePath("/[board]/transactions");
 };

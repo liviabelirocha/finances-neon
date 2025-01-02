@@ -7,7 +7,6 @@ import { TransactionType } from "@prisma/client";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { MoneyInput } from "../money-input";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import {
@@ -35,6 +34,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { InstallmentsInput } from "./_components/installments";
+import { MoneyInput } from "./_components/money-input";
 import { upsertTransactionSchema } from "./schema";
 
 type FormSchema = z.infer<typeof upsertTransactionSchema>;
@@ -57,6 +58,7 @@ export const UpsertTransactionForm = ({
       date: new Date(),
       name: "",
       type: TransactionType.EXPENSE,
+      installments: 1,
     },
   });
 
@@ -66,6 +68,7 @@ export const UpsertTransactionForm = ({
       amount: +data.amount * 100,
       boardId: params.board as string,
       id: data.id ?? "",
+      installments: data.installments ? +data.installments : 1,
     });
     setIsOpen(false);
     form.reset();
@@ -154,6 +157,26 @@ export const UpsertTransactionForm = ({
                   </FormItem>
                 )}
               />
+
+              {!isUpdate && (
+                <FormField
+                  control={form.control}
+                  name="installments"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Installments</FormLabel>
+                      <InstallmentsInput
+                        amount={form.getValues("amount")}
+                        {...field}
+                        onChange={(value) =>
+                          field.onChange(value.target.valueAsNumber)
+                        }
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <FormField
                 control={form.control}
