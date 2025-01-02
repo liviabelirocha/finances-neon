@@ -3,10 +3,11 @@
 import { Button } from "@/_components/ui/button";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
+import { EditTransactionButton } from "../_components/edit-transaction-button";
 import { TypeBadge } from "../_components/type-badge";
 
-export const columns: ColumnDef<Transaction & { tag?: Tag }>[] = [
+export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -43,11 +44,9 @@ export const columns: ColumnDef<Transaction & { tag?: Tag }>[] = [
   {
     accessorKey: "actions",
     header: "",
-    cell: () => (
-      <div className="space-x-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <PencilIcon />
-        </Button>
+    cell: ({ row: { original } }) => (
+      <div className="flex justify-end space-x-1">
+        <EditTransactionButton transaction={original} />
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <TrashIcon color="red" />
         </Button>
