@@ -24,7 +24,7 @@ export const columns: ColumnDef<
         <Button variant="ghost" size="icon" className="text-muted-foreground">
           <TrashIcon color="red" />
         </Button>
-        <Link href={`/${original.boardId}/transactions`}>
+        <Link href={`/${original.boardId}`}>
           <Button variant="ghost" size="icon" className="text-muted-foreground">
             <MoveRight />
           </Button>
