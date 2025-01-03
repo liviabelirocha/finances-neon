@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/_lib/utils";
 import {
   add,
@@ -5,7 +7,6 @@ import {
   endOfYear,
   format,
   isEqual,
-  isFuture,
   parse,
   startOfMonth,
   startOfToday,
@@ -78,7 +79,6 @@ export function MonthPicker({ value, onChange }: MonthPickerProps) {
                   "absolute right-1 disabled:bg-slate-100",
                 )}
                 type="button"
-                disabled={isFuture(add(firstDayCurrentYear, { years: 1 }))}
                 onClick={nextYear}
               >
                 <ChevronRight className="h-4 w-4" />
@@ -106,7 +106,6 @@ export function MonthPicker({ value, onChange }: MonthPickerProps) {
                       isEqual(month, getStartOfCurrentMonth()) &&
                       "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50",
                   )}
-                  disabled={isFuture(month)}
                   role="gridcell"
                   tabIndex={-1}
                   type="button"

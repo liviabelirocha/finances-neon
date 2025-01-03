@@ -8,7 +8,7 @@ export default async function Layout({ children }: PropsWithChildren) {
   return (
     <>
       <Navbar />
-      {children}
+      <div className="m-6">{children}</div>
     </>
   );
 }
