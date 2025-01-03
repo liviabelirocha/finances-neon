@@ -28,7 +28,6 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
     header: "Date",
     cell: ({ row: { original } }) =>
       new Date(original.date).toLocaleDateString("en-US", {
-        day: "2-digit",
         month: "long",
         year: "numeric",
       }),
