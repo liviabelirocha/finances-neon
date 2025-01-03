@@ -1,7 +1,10 @@
 import { Navbar } from "@/_components/navbar";
+import { auth } from "@/_lib/auth";
 import { PropsWithChildren } from "react";
 
-export default function Layout({ children }: PropsWithChildren) {
+export default async function Layout({ children }: PropsWithChildren) {
+  await auth();
+
   return (
     <>
       <Navbar />
