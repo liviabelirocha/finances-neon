@@ -3,6 +3,7 @@
 import { db } from "@/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { TransactionType } from "@prisma/client";
+import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { upsertTransactionSchema } from "./schema";
 
@@ -31,14 +32,17 @@ export const upsertTransaction = async (params: {
         type: params.type,
         amount,
         boardId: params.boardId,
-        date: params.date,
+        date: add(params.date, { months: idx }),
       })),
     });
   } else {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, installments, ...data } = params;
+
     await db.transaction.upsert({
-      where: { id: params.id },
-      update: { ...params },
-      create: { ...params },
+      where: { id },
+      update: { ...data },
+      create: { ...data },
     });
   }
 

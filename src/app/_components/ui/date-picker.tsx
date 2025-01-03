@@ -3,17 +3,16 @@
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/_lib/utils";
-import { SelectSingleEventHandler } from "react-day-picker";
 import { Button } from "./button";
-import { Calendar } from "./calendar";
+import { MonthPicker } from "./month-picker";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 
 export const DatePicker = ({
   value,
   onChange,
 }: {
-  value?: Date;
-  onChange?: SelectSingleEventHandler;
+  value: Date;
+  onChange: (newMonth: Date) => void;
 }) => {
   return (
     <Popover>
@@ -28,7 +27,6 @@ export const DatePicker = ({
           <CalendarIcon className="mr-2 h-4 w-4" />
           {value ? (
             new Date(value).toLocaleDateString("en-US", {
-              day: "2-digit",
               month: "long",
               year: "numeric",
             })
@@ -38,12 +36,7 @@ export const DatePicker = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar
-          mode="single"
-          selected={value}
-          onSelect={onChange}
-          initialFocus
-        />
+        <MonthPicker value={value} onChange={onChange} />
       </PopoverContent>
     </Popover>
   );
