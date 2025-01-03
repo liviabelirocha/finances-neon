@@ -1,5 +1,6 @@
 import { Input } from "@/_components/ui/input";
 import { Switch } from "@/_components/ui/switch";
+import { moneyFormat } from "@/_lib/money-format";
 import React, { useState } from "react";
 import { InputProps } from "react-day-picker";
 
@@ -36,7 +37,7 @@ const InstallmentsInput = React.forwardRef<
 
           {value > 1 && amount > 0 && (
             <span>
-              {value} installments of ${(amount / value).toFixed(2)} each
+              {value} installments of {moneyFormat(amount / value)} each
             </span>
           )}
         </div>

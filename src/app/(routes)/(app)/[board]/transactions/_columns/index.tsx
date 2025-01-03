@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/_components/ui/button";
+import { moneyFormat } from "@/_lib/money-format";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { TrashIcon } from "lucide-react";
@@ -35,11 +36,7 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({ row: { original } }) =>
-      new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(original.amount / 100),
+    cell: ({ row: { original } }) => moneyFormat(original.amount / 100),
   },
   {
     accessorKey: "actions",
