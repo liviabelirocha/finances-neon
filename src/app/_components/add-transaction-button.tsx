@@ -2,8 +2,8 @@
 
 import { ArrowDownUpIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { UpsertTransactionForm } from "../upsert-transaction-form";
+import { Button } from "./ui/button";
+import { UpsertTransactionForm } from "./upsert-transaction-form";
 
 export const AddTransactionButton = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);

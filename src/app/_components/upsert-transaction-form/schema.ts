@@ -21,4 +21,5 @@ export const upsertTransactionSchema = z.object({
     required_error: "Date is required",
   }),
   installments: z.number().positive().optional(),
+  tagId: z.string().trim().optional(),
 });

@@ -8,9 +8,11 @@ datasource db {
 }
 
 model Board {
-  id        String      @id @default(uuid())
-  name      String
-  UserBoard UserBoard[]
+  id          String        @id @default(uuid())
+  name        String
+  UserBoard   UserBoard[]
+  Tag         Tag[]
+  Transaction Transaction[]
 }
 
 model UserBoard {
@@ -28,6 +30,7 @@ model Transaction {
   tag       Tag?            @relation(fields: [tagId], references: [id])
   tagId     String?
   boardId   String
+  board     Board           @relation(fields: [boardId], references: [id])
   date      DateTime        @default(now())
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
@@ -45,5 +48,7 @@ model Tag {
   name        String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  boardId     String
+  board       Board         @relation(fields: [boardId], references: [id])
   Transaction Transaction[]
 }

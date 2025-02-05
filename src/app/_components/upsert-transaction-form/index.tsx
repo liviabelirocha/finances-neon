@@ -36,6 +36,7 @@ import {
 } from "../ui/sheet";
 import { InstallmentsInput } from "./_components/installments";
 import { MoneyInput } from "./_components/money-input";
+import { Tag } from "./_components/tag";
 import { upsertTransactionSchema } from "./schema";
 
 type FormSchema = z.infer<typeof upsertTransactionSchema>;
@@ -153,6 +154,21 @@ export const UpsertTransactionForm = ({
                         ))}
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="tagId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Tag (optional)</FormLabel>
+                    <Tag
+                      defaultValue={field.value}
+                      onChange={(value) => field.onChange(value)}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

@@ -2,21 +2,11 @@
 
 import { db } from "@/_lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { TransactionType } from "@prisma/client";
 import { add } from "date-fns";
 import { revalidatePath } from "next/cache";
-import { upsertTransactionSchema } from "./schema";
+import { UpsertTransactionSchema, upsertTransactionSchema } from "./schema";
 
-export const upsertTransaction = async (params: {
-  id?: string;
-  name: string;
-  type: TransactionType;
-  amount: number;
-  boardId: string;
-  tagId?: string;
-  installments?: number;
-  date: Date;
-}) => {
+export const upsertTransaction = async (params: UpsertTransactionSchema) => {
   upsertTransactionSchema.parse(params);
 
   const { userId } = await auth();
@@ -33,6 +23,7 @@ export const upsertTransaction = async (params: {
         amount,
         boardId: params.boardId,
         date: add(params.date, { months: idx }),
+        tagId: params.tagId,
       })),
     });
   } else {
