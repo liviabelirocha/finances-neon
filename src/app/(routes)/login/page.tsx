@@ -1,3 +1,4 @@
+import { Logo } from "@/_components/logo";
 import { Button } from "@/_components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
@@ -17,18 +18,13 @@ export default async function LoginPage({
   return (
     <div className="grid h-full grid-cols-2">
       <div className="mx-auto flex h-full max-w-[550px] flex-col justify-center p-8">
-        <Image
-          src="/logo.svg"
-          alt="Finances"
-          width={173}
-          height={39}
-          className="mb-8"
-        />
+        <Logo />
+
         <h1 className="mb-3 text-4xl font-bold">Welcome</h1>
         <p className="mb-8 text-muted-foreground">
-          Finance AI is a financial management platform that uses AI to monitor
-          your transactions and provide personalized insights, making it easier
-          to manage your budget.
+          Finances Neon is a financial management platform that uses AI to
+          monitor your transactions and provide personalized insights, making it
+          easier to manage your budget.
         </p>
         <SignInButton>
           <Button variant="outline">

@@ -34,6 +34,7 @@ export const EditTransactionButton = ({
           name: transaction.name,
           type: transaction.type,
           tagId: transaction.tagId ?? undefined,
+          method: transaction.method,
         }}
       />
     </>
