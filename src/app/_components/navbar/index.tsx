@@ -4,6 +4,7 @@ import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { ActiveLink } from "./components/active-link";
+import { GenerateInviteLink } from "./components/generate-invite-link";
 
 export const Navbar = () => {
   const params = useParams();
@@ -22,7 +23,10 @@ export const Navbar = () => {
           </>
         )}
       </div>
-      <UserButton showName />
+      <div className="flex items-center gap-4">
+        {params.board && <GenerateInviteLink />}
+        <UserButton showName />
+      </div>
     </nav>
   );
 };

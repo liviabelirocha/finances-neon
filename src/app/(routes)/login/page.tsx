@@ -5,10 +5,14 @@ import { LogInIcon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: { redirectTo?: string };
+}) {
   const { userId } = await auth();
 
-  if (userId) redirect("/");
+  if (userId) redirect(searchParams.redirectTo || "/");
 
   return (
     <div className="grid h-full grid-cols-2">

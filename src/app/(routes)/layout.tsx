@@ -1,3 +1,4 @@
+import { Toaster } from "@/_components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import type { Metadata } from "next";
@@ -22,8 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <ClerkProvider appearance={{ baseTheme: dark }}>
         <body className={`${mulish.className} dark antialiased`}>
-          <div className="b- flex h-full flex-col overflow-hidden">
+          <div className="flex h-full flex-col overflow-hidden">
             {children}
+            <Toaster />
           </div>
         </body>
       </ClerkProvider>

@@ -65,7 +65,7 @@ export const LastTransactions = ({
               </div>
               <div>
                 <div className="text-sm font-bold">{transaction.name}</div>
-                <div className="font-muted-foreground text-sm">
+                <div className="text-sm text-muted-foreground">
                   {new Date(transaction.date).toLocaleDateString("en-US", {
                     month: "long",
                     year: "numeric",
