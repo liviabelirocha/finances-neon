@@ -14,7 +14,9 @@ export const createTag = async ({
 
   if (!userId) throw new Error("Unauthorized");
 
-  await db.tag.create({
+  const tag = await db.tag.create({
     data: { name, boardId },
   });
+
+  return tag;
 };

@@ -76,13 +76,13 @@ export function Tag({
           <CommandList>
             <CommandEmpty>
               <Button
-                className="w-full whitespace-nowrap"
+                className="whitespace-nowrap"
                 type="button"
                 disabled={isLoading}
                 onClick={async () => {
                   setIsLoading(true);
 
-                  await createTag({
+                  const tag = await createTag({
                     boardId: urlParams.board as string,
                     name: search,
                   });
@@ -90,6 +90,8 @@ export function Tag({
                   await fetchTags();
 
                   setSearch("");
+                  setValue(tag.name);
+                  onChange?.(tag.id);
                   setIsLoading(false);
                 }}
               >
@@ -108,11 +110,6 @@ export function Tag({
                   value={tag.name}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
-
-                    console.log(currentValue);
-                    console.log(
-                      tags.find((tag) => tag.name === currentValue)?.id ?? "",
-                    );
 
                     onChange?.(
                       tags.find((tag) => tag.name === currentValue)?.id ?? "",

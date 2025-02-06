@@ -17,5 +17,5 @@ export default async function Layout({
 
   if (!board) redirect("/");
 
-  return children;
+  return <div className="flex h-full flex-col overflow-hidden">{children}</div>;
 }

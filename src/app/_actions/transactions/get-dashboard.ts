@@ -76,7 +76,6 @@ export const getDashboard = async ({
         }),
       },
     },
-    take: 20,
     orderBy: {
       date: "desc",
     },
