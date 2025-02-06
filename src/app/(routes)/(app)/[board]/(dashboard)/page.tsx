@@ -1,4 +1,5 @@
 import { getDashboard } from "@/_actions/transactions/get-dashboard";
+import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { MonthSelector } from "./_components/month-selector";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
 import { SummaryCards } from "./_features/summary-cards";
@@ -30,6 +31,7 @@ export default async function Dashboard({
           <SummaryCards {...dashboard} />
           <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
             <TransactionsPieChart {...dashboard} />
+            <ExpensesPerCategory {...dashboard} />
           </div>
         </div>
       </div>

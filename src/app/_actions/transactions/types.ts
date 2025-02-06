@@ -9,4 +9,5 @@ export type Dashboard = {
     EXPENSE: Summary;
     INVESTMENT: Summary;
   };
+  categoriesSummary: Record<string, Summary>;
 };
