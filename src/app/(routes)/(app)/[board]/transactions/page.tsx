@@ -29,10 +29,7 @@ export default async function Page({
           <AddTransactionButton />
         </div>
 
-        <DataTable
-          columns={columns}
-          data={[...transactions, ...transactions]}
-        />
+        <DataTable columns={columns} data={transactions} />
       </div>
     </ScrollArea>
   );
