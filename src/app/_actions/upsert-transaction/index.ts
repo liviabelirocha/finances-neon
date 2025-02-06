@@ -24,6 +24,7 @@ export const upsertTransaction = async (params: UpsertTransactionSchema) => {
         boardId: params.boardId,
         date: add(params.date, { months: idx }),
         tagId: params.tagId,
+        method: params.method,
       })),
     });
   } else {

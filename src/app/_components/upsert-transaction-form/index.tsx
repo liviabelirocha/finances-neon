@@ -1,7 +1,10 @@
 "use client";
 
 import { upsertTransaction } from "@/_actions/upsert-transaction";
-import { TRANSACTION_TYPE_OPTIONS } from "@/_constants/transactions";
+import {
+  TRANSACTION_METHOD_OPTIONS,
+  TRANSACTION_TYPE_OPTIONS,
+} from "@/_constants/transactions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionType } from "@prisma/client";
 import { useParams } from "next/navigation";
@@ -148,6 +151,34 @@ export const UpsertTransactionForm = ({
                       </FormControl>
                       <SelectContent>
                         {TRANSACTION_TYPE_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Method (optional)</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a method..." />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {TRANSACTION_METHOD_OPTIONS.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>

@@ -1,5 +1,6 @@
 import { getDashboard } from "@/_actions/transactions/get-dashboard";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
+import { LastTransactions } from "./_components/last-transactions";
 import { MonthSelector } from "./_components/month-selector";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
 import { SummaryCards } from "./_features/summary-cards";
@@ -34,6 +35,7 @@ export default async function Dashboard({
             <ExpensesPerCategory {...dashboard} />
           </div>
         </div>
+        <LastTransactions {...dashboard} />
       </div>
     </div>
   );

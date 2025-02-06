@@ -1,4 +1,4 @@
-import { TransactionType } from "@prisma/client";
+import { TransactionMethod, TransactionType } from "@prisma/client";
 import { z } from "zod";
 
 export const upsertTransactionSchema = z.object({
@@ -17,6 +17,7 @@ export const upsertTransactionSchema = z.object({
   type: z.nativeEnum(TransactionType, {
     required_error: "Type is required",
   }),
+  method: z.nativeEnum(TransactionMethod).optional(),
   date: z.date({
     required_error: "Date is required",
   }),

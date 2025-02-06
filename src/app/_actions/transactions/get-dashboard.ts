@@ -1,4 +1,6 @@
+import { db } from "@/_lib/prisma";
 import { TransactionType } from "@prisma/client";
+import { add, set } from "date-fns";
 import { getTransactionsSummaryByCategory } from "./summary-by-category";
 import { getTransactionsSummaryByType } from "./summary-by-type";
 import { Dashboard } from "./types";
@@ -12,11 +14,12 @@ export const getDashboard = async ({
   month: number;
   year: number;
 }): Promise<Dashboard> => {
+  const initialDate = set(new Date(), { month, year, date: 1 });
+
   // by type
   const summaryByType = await getTransactionsSummaryByType({
     boardId,
-    month,
-    year,
+    initialDate,
   });
 
   const invested =
@@ -43,8 +46,7 @@ export const getDashboard = async ({
   // by category
   const summaryByCategory = await getTransactionsSummaryByCategory({
     boardId,
-    month,
-    year,
+    initialDate,
   });
 
   const categoriesTotal = Object.values(summaryByCategory).reduce(
@@ -63,5 +65,22 @@ export const getDashboard = async ({
     };
   });
 
-  return { summary, categoriesSummary };
+  // last transactions
+  const lastTransactions = await db.transaction.findMany({
+    where: {
+      boardId,
+      date: {
+        gte: initialDate,
+        lt: add(initialDate, {
+          months: 1,
+        }),
+      },
+    },
+    take: 20,
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  return { summary, categoriesSummary, lastTransactions };
 };

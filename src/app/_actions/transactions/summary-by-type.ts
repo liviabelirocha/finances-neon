@@ -1,19 +1,15 @@
 "use server";
 
 import { db } from "@/_lib/prisma";
-import { add, set } from "date-fns";
+import { add } from "date-fns";
 
 export const getTransactionsSummaryByType = async ({
   boardId,
-  month,
-  year,
+  initialDate,
 }: {
   boardId: string;
-  month: number;
-  year: number;
+  initialDate: Date;
 }) => {
-  const initialDate = set(new Date(), { month, year, date: 1 });
-
   const transactions = await db.transaction.groupBy({
     where: {
       boardId,
