@@ -19,7 +19,7 @@ model UserBoard {
   id      String @id @default(uuid())
   userId  String
   boardId String
-  board   Board  @relation(fields: [boardId], references: [id])
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
 }
 
 model Transaction {
@@ -31,7 +31,7 @@ model Transaction {
   tag       Tag?              @relation(fields: [tagId], references: [id])
   tagId     String?
   boardId   String
-  board     Board             @relation(fields: [boardId], references: [id])
+  board     Board             @relation(fields: [boardId], references: [id], onDelete: Cascade)
   date      DateTime          @default(now())
   createdAt DateTime          @default(now())
   updatedAt DateTime          @updatedAt
@@ -57,6 +57,6 @@ model Tag {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   boardId     String
-  board       Board         @relation(fields: [boardId], references: [id])
+  board       Board         @relation(fields: [boardId], references: [id], onDelete: Cascade)
   Transaction Transaction[]
 }

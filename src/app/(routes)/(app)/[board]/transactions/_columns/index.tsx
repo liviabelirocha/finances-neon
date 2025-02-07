@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/_components/ui/button";
+import { deleteTransaction } from "@/_actions/delete-transaction";
+import { DeleteButton } from "@/_components/delete-button";
 import { moneyFormat } from "@/_lib/money-format";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { TrashIcon } from "lucide-react";
 import { EditTransactionButton } from "../_components/edit-transaction-button";
 import { TypeBadge } from "../_components/type-badge";
 
@@ -43,9 +43,11 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
     cell: ({ row: { original } }) => (
       <div className="flex justify-end space-x-1">
         <EditTransactionButton transaction={original} />
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <TrashIcon color="red" />
-        </Button>
+        <DeleteButton
+          action={deleteTransaction}
+          id={original.id}
+          name={original.name}
+        />
       </div>
     ),
   },

@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createBoardSchema } from "./schema";
 
-import { createBoard } from "@/_actions/create-board";
+import { createBoard } from "@/_actions/board/create";
 import { Button } from "@/_components/ui/button";
 import {
   Form,

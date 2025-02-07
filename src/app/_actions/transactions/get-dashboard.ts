@@ -14,7 +14,15 @@ export const getDashboard = async ({
   month: number;
   year: number;
 }): Promise<Dashboard> => {
-  const initialDate = set(new Date(), { month, year, date: 1 });
+  const initialDate = set(new Date(), {
+    month,
+    year,
+    date: 1,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    milliseconds: 0,
+  });
 
   // by type
   const summaryByType = await getTransactionsSummaryByType({
@@ -30,12 +38,8 @@ export const getDashboard = async ({
 
   const summary: Dashboard["summary"] = {
     [TransactionType.INCOME]: {
-      percentage: Math.round(
-        ((summaryByType.INCOME + summaryByType.INVESTMENT_WITHDRAWAL) /
-          totalAmount) *
-          100,
-      ),
-      total: summaryByType.INCOME + summaryByType.INVESTMENT_WITHDRAWAL,
+      percentage: Math.round((summaryByType.INCOME / totalAmount) * 100),
+      total: summaryByType.INCOME,
     },
     [TransactionType.EXPENSE]: {
       percentage: Math.round((summaryByType.EXPENSE / totalAmount) * 100),

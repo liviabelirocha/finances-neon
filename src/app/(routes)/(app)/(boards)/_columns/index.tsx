@@ -1,9 +1,11 @@
 "use client";
 
+import { deleteBoard } from "@/_actions/board/delete";
+import { DeleteButton } from "@/_components/delete-button";
 import { Button } from "@/_components/ui/button";
 import { Board, UserBoard } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoveRight, TrashIcon } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import Link from "next/link";
 
 export const columns: ColumnDef<
@@ -21,9 +23,11 @@ export const columns: ColumnDef<
     header: "",
     cell: ({ row: { original } }) => (
       <div className="flex justify-end space-x-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <TrashIcon color="red" />
-        </Button>
+        <DeleteButton
+          action={deleteBoard}
+          id={original.boardId}
+          name={original.board.name}
+        />
         <Link href={`/${original.boardId}`}>
           <Button variant="ghost" size="icon" className="text-muted-foreground">
             <MoveRight />
