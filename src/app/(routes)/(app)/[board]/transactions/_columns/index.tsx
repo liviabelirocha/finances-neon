@@ -2,9 +2,11 @@
 
 import { deleteTransaction } from "@/_actions/delete-transaction";
 import { DeleteButton } from "@/_components/delete-button";
+import { Button } from "@/_components/ui/button";
 import { moneyFormat } from "@/_lib/money-format";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 import { EditTransactionButton } from "../_components/edit-transaction-button";
 import { TypeBadge } from "../_components/type-badge";
 
@@ -15,13 +17,38 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Type
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row: { original } }) => <TypeBadge type={original.type} />,
   },
   {
     accessorKey: "tag",
-    header: "Category",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Category
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row: { original } }) => original.tag?.name ?? "-",
+    sortingFn: (rowA, rowB) => {
+      const nameA = rowA.original.tag?.name?.toLowerCase() || "";
+      const nameB = rowB.original.tag?.name?.toLowerCase() || "";
+      return nameA.localeCompare(nameB);
+    },
   },
   {
     accessorKey: "date",
@@ -34,7 +61,17 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Amount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Amount
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row: { original } }) => moneyFormat(original.amount / 100),
   },
   {
