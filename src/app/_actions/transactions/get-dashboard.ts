@@ -1,6 +1,6 @@
-import { db } from "@/_lib/prisma";
 import { TransactionType } from "@prisma/client";
-import { add, set } from "date-fns";
+import { set } from "date-fns";
+import { monthTransactions } from "./month-transactions";
 import { getTransactionsSummaryByCategory } from "./summary-by-category";
 import { getTransactionsSummaryByType } from "./summary-by-type";
 import { Dashboard } from "./types";
@@ -74,20 +74,7 @@ export const getDashboard = async ({
   });
 
   // last transactions
-  const lastTransactions = await db.transaction.findMany({
-    where: {
-      boardId,
-      date: {
-        gte: initialDate,
-        lt: add(initialDate, {
-          months: 1,
-        }),
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const lastTransactions = await monthTransactions({ boardId, initialDate });
 
   return {
     summary,

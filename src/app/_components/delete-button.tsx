@@ -3,7 +3,14 @@
 import { Button } from "@/_components/ui/button";
 import { TrashIcon } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader } from "./ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from "./ui/dialog";
 import { SheetDescription, SheetTitle } from "./ui/sheet";
 
 export const DeleteButton = ({
@@ -23,24 +30,20 @@ export const DeleteButton = ({
   };
 
   return (
-    <>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="text-muted-foreground"
-        onClick={() => setIsOpen(true)}
-      >
-        <TrashIcon color="red" />
-      </Button>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="text-muted-foreground">
+          <TrashIcon color="red" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <SheetTitle>Are you sure you want to delete {name}?</SheetTitle>
+          <SheetDescription>This action cannot be undone</SheetDescription>
+        </DialogHeader>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <SheetTitle>Are you sure you want to delete {name}?</SheetTitle>
-            <SheetDescription>This action cannot be undone</SheetDescription>
-          </DialogHeader>
-
-          <form action={handleSubmit} className="flex justify-end">
+        <DialogFooter>
+          <DialogClose asChild>
             <Button
               type="button"
               variant="ghost"
@@ -48,12 +51,14 @@ export const DeleteButton = ({
             >
               Cancel
             </Button>
+          </DialogClose>
+          <form action={handleSubmit}>
             <Button type="submit" variant="destructive">
               Delete
             </Button>
           </form>
-        </DialogContent>
-      </Dialog>
-    </>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };

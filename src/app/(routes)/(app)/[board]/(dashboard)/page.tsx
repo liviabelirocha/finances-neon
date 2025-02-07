@@ -1,5 +1,6 @@
 import { getDashboard } from "@/_actions/transactions/get-dashboard";
 import { MonthSelector } from "../../../../_components/month-selector";
+import { AiReportButton } from "./_components/ai-report-button";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
@@ -14,17 +15,22 @@ export default async function Dashboard({
 }) {
   const boardId = (await params).board;
 
-  const dashboard = await getDashboard({
+  const dashParams = {
     boardId,
     month: searchParams.month ?? new Date().getMonth(),
     year: searchParams.year ?? new Date().getFullYear(),
-  });
+  };
+
+  const dashboard = await getDashboard(dashParams);
 
   return (
     <div className="flex flex-col space-y-6 overflow-hidden">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <MonthSelector />
+        <div className="flex gap-2">
+          <AiReportButton {...dashParams} />
+          <MonthSelector {...dashParams} />
+        </div>
       </div>
 
       <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
