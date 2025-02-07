@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { SummaryCard } from "../_components/summary-card";
 
-export const SummaryCards = async ({
+export const SummaryCards = ({
   summary: { EXPENSE, INCOME, INVESTMENT },
 }: {
   summary: Dashboard["summary"];
@@ -24,7 +24,7 @@ export const SummaryCards = async ({
         <div className="flex justify-between">
           <p className="text-4xl font-bold">
             {moneyFormat(
-              (INCOME.total + INVESTMENT.total - EXPENSE.total) / 100,
+              (INCOME.total - INVESTMENT.total - EXPENSE.total) / 100,
             )}
           </p>
           <AddTransactionButton />

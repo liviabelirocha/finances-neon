@@ -2,7 +2,7 @@ import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export default clerkMiddleware(async (_, req) => {
-  const headers = new Headers(req.headers);
+  const headers = new Headers();
   headers.set("x-current-path", `${req.nextUrl.pathname}${req.nextUrl.search}`);
   return NextResponse.next({ headers });
 });

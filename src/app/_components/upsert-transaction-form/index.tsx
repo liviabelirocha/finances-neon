@@ -7,9 +7,10 @@ import {
 } from "@/_constants/transactions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionType } from "@prisma/client";
-import { useParams } from "next/navigation";
+import { set } from "date-fns";
+import { useParams, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import {
@@ -40,9 +41,7 @@ import {
 import { InstallmentsInput } from "./_components/installments";
 import { MoneyInput } from "./_components/money-input";
 import { Tag } from "./_components/tag";
-import { upsertTransactionSchema } from "./schema";
-
-type FormSchema = z.infer<typeof upsertTransactionSchema>;
+import { UpsertTransactionFormType, upsertTransactionSchema } from "./schema";
 
 export const UpsertTransactionForm = ({
   isOpen,
@@ -51,22 +50,33 @@ export const UpsertTransactionForm = ({
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  defaultValues?: FormSchema;
+  defaultValues?: UpsertTransactionFormType;
 }) => {
   const params = useParams();
+  const searchParams = useSearchParams();
 
-  const form = useForm<FormSchema>({
+  const monthInParams = searchParams.get("month");
+  const yearInParams = searchParams.get("year");
+
+  const month = monthInParams ? +monthInParams : new Date().getMonth();
+  const year = yearInParams ? +yearInParams : new Date().getFullYear();
+
+  const form = useForm<UpsertTransactionFormType>({
     resolver: zodResolver(upsertTransactionSchema),
     defaultValues: defaultValues ?? {
       amount: 0,
-      date: new Date(),
+      date: set(new Date(), { month, year, date: 1 }),
       name: "",
       type: TransactionType.EXPENSE,
       installments: 1,
     },
   });
 
-  const onSubmit = async (data: FormSchema) => {
+  useEffect(() => {
+    form.setValue("date", set(new Date(), { month, year, date: 1 }));
+  }, [month, year]);
+
+  const onSubmit = async (data: UpsertTransactionFormType) => {
     await upsertTransaction({
       ...data,
       amount: +data.amount * 100,

@@ -30,8 +30,12 @@ export const getDashboard = async ({
 
   const summary: Dashboard["summary"] = {
     [TransactionType.INCOME]: {
-      percentage: Math.round((summaryByType.INCOME / totalAmount) * 100),
-      total: summaryByType.INCOME,
+      percentage: Math.round(
+        ((summaryByType.INCOME + summaryByType.INVESTMENT_WITHDRAWAL) /
+          totalAmount) *
+          100,
+      ),
+      total: summaryByType.INCOME + summaryByType.INVESTMENT_WITHDRAWAL,
     },
     [TransactionType.EXPENSE]: {
       percentage: Math.round((summaryByType.EXPENSE / totalAmount) * 100),
@@ -77,9 +81,13 @@ export const getDashboard = async ({
       },
     },
     orderBy: {
-      date: "desc",
+      createdAt: "desc",
     },
   });
 
-  return { summary, categoriesSummary, lastTransactions };
+  return {
+    summary,
+    categoriesSummary,
+    lastTransactions,
+  };
 };
