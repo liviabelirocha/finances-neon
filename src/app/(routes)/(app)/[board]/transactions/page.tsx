@@ -52,7 +52,7 @@ export default async function Page({
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transactions</h1>
           <div className="flex gap-2">
-            <MonthSelector />
+            <MonthSelector month={month} year={year} />
             <AddTransactionButton />
           </div>
         </div>
