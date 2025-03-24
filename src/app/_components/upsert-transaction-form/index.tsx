@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -105,165 +106,167 @@ export const UpsertTransactionForm = ({
         </SheetHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex h-full flex-col"
-          >
-            <div className="flex-grow space-y-3">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Type in the name..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Value</FormLabel>
-                    <FormControl>
-                      <MoneyInput
-                        placeholder="Type in the value..."
-                        value={field.value}
-                        onValueChange={({ floatValue }) =>
-                          field.onChange(floatValue)
-                        }
-                        onBlur={field.onBlur}
-                        disabled={field.disabled}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Type</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a type..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {TRANSACTION_TYPE_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="method"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Method (optional)</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a method..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {TRANSACTION_METHOD_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="tagId"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Tag (optional)</FormLabel>
-                    <Tag
-                      defaultValue={field.value}
-                      onChange={(value) => field.onChange(value)}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {!isUpdate && (
+          <ScrollArea>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-3">
                 <FormField
                   control={form.control}
-                  name="installments"
+                  name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Installments</FormLabel>
-                      <InstallmentsInput
-                        amount={form.getValues("amount")}
-                        {...field}
-                        onChange={(value) =>
-                          field.onChange(value.target.valueAsNumber)
-                        }
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Type in the name..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="amount"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Value</FormLabel>
+                      <FormControl>
+                        <MoneyInput
+                          placeholder="Type in the value..."
+                          value={field.value}
+                          onValueChange={({ floatValue }) =>
+                            field.onChange(floatValue)
+                          }
+                          onBlur={field.onBlur}
+                          disabled={field.disabled}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a type..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {TRANSACTION_TYPE_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="method"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Method (optional)</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a method..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {TRANSACTION_METHOD_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tagId"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Tag (optional)</FormLabel>
+                      <Tag
+                        defaultValue={field.value}
+                        onChange={(value) => field.onChange(value)}
                       />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
 
-              <FormField
-                control={form.control}
-                name="date"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date</FormLabel>
-                    <DatePicker value={field.value} onChange={field.onChange} />
-                    <FormMessage />
-                  </FormItem>
+                {!isUpdate && (
+                  <FormField
+                    control={form.control}
+                    name="installments"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Installments</FormLabel>
+                        <InstallmentsInput
+                          amount={form.getValues("amount")}
+                          {...field}
+                          onChange={(value) =>
+                            field.onChange(value.target.valueAsNumber)
+                          }
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            </div>
 
-            <SheetFooter>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Cancel
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date</FormLabel>
+                      <DatePicker
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <SheetFooter>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="outline"
+                    type="button"
+                    className="w-full"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                </SheetTrigger>
+                <Button type="submit" className="w-full">
+                  {isUpdate ? "Update" : "Add"}
                 </Button>
-              </SheetTrigger>
-              <Button type="submit" className="w-full">
-                {isUpdate ? "Update" : "Add"}
-              </Button>
-            </SheetFooter>
-          </form>
+              </SheetFooter>
+            </form>
+          </ScrollArea>
         </Form>
       </SheetContent>
     </Sheet>

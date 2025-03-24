@@ -1,6 +1,5 @@
 import { getDashboard } from "@/_actions/transactions/get-dashboard";
 import { MonthSelector } from "../../../../_components/month-selector";
-import { AiReportButton } from "./_components/ai-report-button";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
@@ -28,7 +27,7 @@ export default async function Dashboard({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <div className="flex gap-2">
-          <AiReportButton {...dashParams} />
+          {/* <AiReportButton {...dashParams} /> */}
           <MonthSelector {...dashParams} />
         </div>
       </div>
