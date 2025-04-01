@@ -44,6 +44,14 @@ import { MoneyInput } from "./_components/money-input";
 import { Tag } from "./_components/tag";
 import { UpsertTransactionFormType, upsertTransactionSchema } from "./schema";
 
+const baseFormValues = ({ month, year }: { month: number; year: number }) => ({
+  amount: 0,
+  date: set(new Date(), { month, year, date: 1 }),
+  name: "",
+  type: TransactionType.EXPENSE,
+  installments: 1,
+});
+
 export const UpsertTransactionForm = ({
   isOpen,
   setIsOpen,
@@ -64,13 +72,7 @@ export const UpsertTransactionForm = ({
 
   const form = useForm<UpsertTransactionFormType>({
     resolver: zodResolver(upsertTransactionSchema),
-    defaultValues: defaultValues ?? {
-      amount: 0,
-      date: set(new Date(), { month, year, date: 1 }),
-      name: "",
-      type: TransactionType.EXPENSE,
-      installments: 1,
-    },
+    defaultValues: defaultValues ?? baseFormValues({ month, year }),
   });
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export const UpsertTransactionForm = ({
       installments: data.installments ? +data.installments : 1,
     });
     setIsOpen(false);
-    form.reset();
+    form.reset(baseFormValues({ month, year }));
   };
 
   const isUpdate = !!defaultValues?.id;
