@@ -1,8 +1,8 @@
 "use client";
 
 import { DatePicker } from "@/_components/ui/date-picker";
+import { useQuery } from "@/_contexts/query-context";
 import { set } from "date-fns";
-import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const MonthSelector = ({
@@ -12,8 +12,7 @@ export const MonthSelector = ({
   month: number;
   year: number;
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
+  const query = useQuery();
 
   const [date, setDate] = useState(set(new Date(), { month, year }));
 
@@ -22,9 +21,10 @@ export const MonthSelector = ({
       <DatePicker
         onChange={(newDate) => {
           setDate(newDate);
-          router.push(
-            `${pathname}?month=${newDate.getMonth()}&year=${newDate.getFullYear()}`,
-          );
+          query.setParams([
+            { name: "month", value: newDate.getMonth().toString() },
+            { name: "year", value: newDate.getFullYear().toString() },
+          ]);
         }}
         value={date}
       />

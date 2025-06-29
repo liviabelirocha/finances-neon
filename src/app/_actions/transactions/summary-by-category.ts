@@ -6,20 +6,26 @@ import { add } from "date-fns";
 export const getTransactionsSummaryByCategory = async ({
   boardId,
   initialDate,
+  endDate,
 }: {
   boardId: string;
-  initialDate: Date;
+  initialDate?: Date;
+  endDate?: Date;
 }) => {
   const transactions = await db.transaction.groupBy({
     where: {
       boardId,
       type: "EXPENSE",
-      date: {
-        gte: initialDate,
-        lt: add(initialDate, {
-          months: 1,
-        }),
-      },
+      ...(initialDate && {
+        date: {
+          gte: initialDate,
+          lt:
+            endDate ??
+            add(initialDate, {
+              months: 1,
+            }),
+        },
+      }),
     },
     _sum: { amount: true },
     by: ["tagId"],
