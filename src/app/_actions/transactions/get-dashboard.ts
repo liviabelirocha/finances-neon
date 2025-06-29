@@ -62,23 +62,27 @@ export const getDashboard = async ({
     0,
   );
 
-  const categoriesSummary = {} as Dashboard["categoriesSummary"];
-
-  Object.keys(summaryByCategory).forEach((category) => {
-    categoriesSummary[category] = {
-      percentage: Math.round(
-        (summaryByCategory[category] / categoriesTotal) * 100,
-      ),
-      total: summaryByCategory[category],
-    };
-  });
+  const sortedCategoriesSummary = Object.entries(summaryByCategory)
+    .map(([category, total]) => ({
+      category,
+      total,
+      percentage: Math.round((total / categoriesTotal) * 100),
+    }))
+    .sort((a, b) => b.percentage - a.percentage)
+    .reduce(
+      (acc, { category, total, percentage }) => {
+        acc[category] = { total, percentage };
+        return acc;
+      },
+      {} as Dashboard["categoriesSummary"],
+    );
 
   // last transactions
   const lastTransactions = await monthTransactions({ boardId, initialDate });
 
   return {
     summary,
-    categoriesSummary,
+    categoriesSummary: sortedCategoriesSummary,
     lastTransactions,
   };
 };
