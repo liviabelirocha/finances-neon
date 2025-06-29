@@ -1,3 +1,4 @@
+import { VisualizationType } from "@/(routes)/(app)/[board]/(dashboard)/_components/visualization-tabs";
 import { TransactionType } from "@prisma/client";
 import { set } from "date-fns";
 import { monthTransactions } from "./month-transactions";
@@ -9,25 +10,46 @@ export const getDashboard = async ({
   boardId,
   month,
   year,
+  visualization,
 }: {
   boardId: string;
   month: number;
   year: number;
+  visualization: VisualizationType;
 }): Promise<Dashboard> => {
-  const initialDate = set(new Date(), {
-    month,
-    year,
-    date: 1,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    milliseconds: 0,
-  });
+  const initialMonth = visualization === "monthly" ? month : 0;
+
+  const initialDate =
+    visualization === "all-time"
+      ? undefined
+      : set(new Date(), {
+          month: initialMonth,
+          year,
+          date: 1,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          milliseconds: 0,
+        });
+
+  const endDate =
+    visualization === "monthly" || visualization === "all-time"
+      ? undefined
+      : set(new Date(), {
+          month: 11,
+          year,
+          date: 31,
+          hours: 23,
+          minutes: 59,
+          seconds: 59,
+          milliseconds: 59,
+        });
 
   // by type
   const summaryByType = await getTransactionsSummaryByType({
     boardId,
     initialDate,
+    endDate,
   });
 
   const invested =
@@ -55,6 +77,7 @@ export const getDashboard = async ({
   const summaryByCategory = await getTransactionsSummaryByCategory({
     boardId,
     initialDate,
+    endDate,
   });
 
   const categoriesTotal = Object.values(summaryByCategory).reduce(
@@ -78,7 +101,11 @@ export const getDashboard = async ({
     );
 
   // last transactions
-  const lastTransactions = await monthTransactions({ boardId, initialDate });
+  const lastTransactions = await monthTransactions({
+    boardId,
+    initialDate,
+    endDate,
+  });
 
   return {
     summary,

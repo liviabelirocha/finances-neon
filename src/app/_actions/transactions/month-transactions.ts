@@ -6,19 +6,25 @@ import { add } from "date-fns";
 export const monthTransactions = async ({
   boardId,
   initialDate,
+  endDate,
 }: {
   boardId: string;
-  initialDate: Date;
+  initialDate?: Date;
+  endDate?: Date;
 }) => {
   const transactions = await db.transaction.findMany({
     where: {
       boardId,
-      date: {
-        gte: initialDate,
-        lt: add(initialDate, {
-          months: 1,
-        }),
-      },
+      ...(initialDate && {
+        date: {
+          gte: initialDate,
+          lt:
+            endDate ??
+            add(initialDate, {
+              months: 1,
+            }),
+        },
+      }),
     },
     orderBy: {
       createdAt: "desc",

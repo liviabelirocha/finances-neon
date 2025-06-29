@@ -1,7 +1,7 @@
 "use client";
 
 import { DatePicker } from "@/_components/ui/date-picker";
-import { useQuery } from "@/contexts/query-context";
+import { useQuery } from "@/_contexts/query-context";
 import { set } from "date-fns";
 import { useState } from "react";
 

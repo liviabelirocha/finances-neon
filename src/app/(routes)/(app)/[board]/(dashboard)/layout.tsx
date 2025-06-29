@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryProvider } from "@/contexts/query-context";
+import { QueryProvider } from "@/_contexts/query-context";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 

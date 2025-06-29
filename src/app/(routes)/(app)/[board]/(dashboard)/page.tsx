@@ -4,7 +4,10 @@ import { MonthSelector } from "../../../../_components/month-selector";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
-import { VisualizationTabs } from "./_components/visualization-tabs";
+import {
+  VisualizationTabs,
+  VisualizationType,
+} from "./_components/visualization-tabs";
 import { SummaryCards } from "./_features/summary-cards";
 
 export default async function Dashboard({
@@ -20,7 +23,8 @@ export default async function Dashboard({
     boardId,
     month: searchParams.month ?? new Date().getMonth(),
     year: searchParams.year ?? new Date().getFullYear(),
-    visualization: searchParams.visualization ?? "monthly",
+    visualization: (searchParams.visualization ??
+      "monthly") as VisualizationType,
   };
 
   const dashboard = await getDashboard(dashParams);

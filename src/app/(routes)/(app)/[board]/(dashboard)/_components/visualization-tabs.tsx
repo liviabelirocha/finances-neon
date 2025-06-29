@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/_components/ui/tabs";
-import { useQuery } from "@/contexts/query-context";
+import { useQuery } from "@/_contexts/query-context";
 
 export type VisualizationType = "monthly" | "yearly" | "all-time";
 
