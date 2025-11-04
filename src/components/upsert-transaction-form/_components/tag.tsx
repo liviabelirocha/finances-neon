@@ -1,0 +1,136 @@
+"use client";
+
+import { createTag } from "@/actions/tags/create";
+import { listTags } from "@/actions/tags/list";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { Tag as DbTag } from "@prisma/client";
+import { Check, ChevronsUpDown, LoaderCircle, Plus } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export function Tag({
+  defaultValue,
+  onChange,
+}: {
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const [search, setSearch] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [tags, setTags] = useState<DbTag[]>([]);
+
+  async function fetchTags() {
+    const data = await listTags(urlParams.board as string);
+    setTags(data);
+
+    if (defaultValue)
+      setValue(data.find((tag) => tag.id === defaultValue)?.name ?? "");
+  }
+
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  const urlParams = useParams();
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between"
+        >
+          {value
+            ? tags.find((tag) => tag.name === value)?.name
+            : "Select tag..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput
+            placeholder="Search tag..."
+            value={search}
+            onInput={(e) => setSearch(e.currentTarget.value)}
+          />
+          <CommandList>
+            <CommandEmpty>
+              <Button
+                className="whitespace-nowrap"
+                type="button"
+                disabled={isLoading}
+                onClick={async () => {
+                  setIsLoading(true);
+
+                  const tag = await createTag({
+                    boardId: urlParams.board as string,
+                    name: search,
+                  });
+
+                  await fetchTags();
+
+                  setSearch("");
+                  setValue(tag.name);
+                  onChange?.(tag.id);
+                  setIsLoading(false);
+                }}
+              >
+                {isLoading ? "Creating" : "Create"} &quot;{search}&quot;
+                {isLoading ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : (
+                  <Plus />
+                )}
+              </Button>
+            </CommandEmpty>
+            <CommandGroup>
+              {tags.map((tag) => (
+                <CommandItem
+                  key={tag.id}
+                  value={tag.name}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? "" : currentValue);
+
+                    onChange?.(
+                      tags.find((tag) => tag.name === currentValue)?.id ?? "",
+                    );
+
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === tag.name ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {tag.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
