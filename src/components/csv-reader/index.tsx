@@ -2,27 +2,26 @@
 
 import { addBulkTransactions } from "@/actions/add-bulk-transactions";
 import { useToast } from "@/hooks/use-toast";
-import { File, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { DataTable } from "../ui/data-table";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter } from "../ui/dialog";
 import { FileInput } from "./file-input";
 import { FileSpecs } from "./file-specs";
 import { ParsedFile } from "./parse-data";
 import { columns } from "./table";
 
-export const CsvReader = () => {
+export const CsvReader = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}) => {
   const [isUploading, setIsUploading] = useState(false);
   const [file, setFile] = useState<ParsedFile>({ data: [], errors: [] });
-  const [isOpen, setIsOpen] = useState(false);
 
   const params = useParams();
 
@@ -62,12 +61,6 @@ export const CsvReader = () => {
       }}
       open={isOpen}
     >
-      <DialogTrigger asChild>
-        <Button>
-          <File />
-          Upload File
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-[600px]">
         <FileSpecs />
 

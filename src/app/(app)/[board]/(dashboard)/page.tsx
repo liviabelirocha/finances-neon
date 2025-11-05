@@ -1,5 +1,4 @@
 import { getDashboard } from "@/actions/transactions/get-dashboard";
-import { CsvReader } from "@/components/csv-reader";
 import { MonthSelector } from "@/components/month-selector";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
@@ -8,6 +7,7 @@ import {
   VisualizationTabs,
   VisualizationType,
 } from "./_components/visualization-tabs";
+import { DashFeatureList } from "./_features/feature-list";
 import { SummaryCards } from "./_features/summary-cards";
 
 export default async function Dashboard({
@@ -37,9 +37,9 @@ export default async function Dashboard({
         </div>
         <div className="flex gap-2">
           <VisualizationTabs />
-          <CsvReader />
           {/* <AiReportButton {...dashParams} /> */}
           <MonthSelector {...dashParams} />
+          <DashFeatureList />
         </div>
       </div>
 
