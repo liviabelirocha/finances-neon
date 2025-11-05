@@ -16,8 +16,10 @@ export const Navbar = () => {
         <ActiveLink href="/">Boards</ActiveLink>
         {params.board && (
           <>
-            <ActiveLink href={`/${params.board}`}>Dashboard</ActiveLink>
-            <ActiveLink href={`/${params.board}/transactions`}>
+            <ActiveLink href={`/${params.board}`} passSearch>
+              Dashboard
+            </ActiveLink>
+            <ActiveLink href={`/${params.board}/transactions`} passSearch>
               Transactions
             </ActiveLink>
           </>

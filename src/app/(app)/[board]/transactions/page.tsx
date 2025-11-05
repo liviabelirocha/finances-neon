@@ -1,10 +1,10 @@
 import { AddTransactionButton } from "@/components/add-transaction-button";
-import { MonthSelector } from "@/components/month-selector";
 import { DataTable } from "@/components/ui/data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { db } from "@/lib/prisma";
 import { add, set } from "date-fns";
 import { columns } from "./_columns";
+import { MonthPicker } from "./_components/month-picker";
 
 export default async function Page({
   params,
@@ -52,7 +52,7 @@ export default async function Page({
         <div className="flex w-full items-center justify-between">
           <h1 className="text-2xl font-bold">Transactions</h1>
           <div className="flex gap-2">
-            <MonthSelector month={month} year={year} />
+            <MonthPicker />
             <AddTransactionButton />
           </div>
         </div>
