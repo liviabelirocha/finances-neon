@@ -9,8 +9,9 @@ export const upsertTransactionSchema = z.object({
   method: z.nativeEnum(TransactionMethod).optional(),
   date: z.date(),
   tagId: z.string().optional(),
-  installments: z.number().positive().default(1),
+  installments: z.number().positive().default(1).optional(),
   boardId: z.string(),
+  recurring: z.boolean().optional(),
 });
 
 export type UpsertTransactionSchema = z.infer<typeof upsertTransactionSchema>;

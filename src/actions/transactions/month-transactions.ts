@@ -25,6 +25,7 @@ export const monthTransactions = async ({
             }),
         },
       }),
+      recurring: false,
     },
     orderBy: {
       createdAt: "desc",

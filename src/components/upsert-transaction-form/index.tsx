@@ -56,10 +56,14 @@ export const UpsertTransactionForm = ({
   isOpen,
   setIsOpen,
   defaultValues,
+  recurring,
+  onSubmit: afterSubmit,
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   defaultValues?: UpsertTransactionFormType;
+  recurring?: boolean;
+  onSubmit?: () => void;
 }) => {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -86,9 +90,11 @@ export const UpsertTransactionForm = ({
       boardId: params.board as string,
       id: data.id ?? "",
       installments: data.installments ? +data.installments : 1,
+      recurring,
     });
     setIsOpen(false);
     form.reset(baseFormValues({ month, year }));
+    afterSubmit?.();
   };
 
   const isUpdate = !!defaultValues?.id;
@@ -216,7 +222,7 @@ export const UpsertTransactionForm = ({
                   )}
                 />
 
-                {!isUpdate && (
+                {!isUpdate && !recurring && (
                   <FormField
                     control={form.control}
                     name="installments"
