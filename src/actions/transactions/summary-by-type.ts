@@ -25,6 +25,7 @@ export const getTransactionsSummaryByType = async ({
             }),
         },
       }),
+      recurring: false,
     },
     _sum: { amount: true },
     by: ["type"],

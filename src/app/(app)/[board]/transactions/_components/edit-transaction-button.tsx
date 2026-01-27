@@ -17,7 +17,7 @@ export const EditTransactionButton = ({
     <>
       <Button
         variant="ghost"
-        size="icon"
+        size="sm"
         className="text-muted-foreground"
         onClick={() => setIsSheetOpen(true)}
       >

@@ -9,6 +9,7 @@ export const addBulkTransactionsSchema = z.object({
       type: z.nativeEnum(TransactionType),
       method: z.nativeEnum(TransactionMethod).optional(),
       date: z.date(),
+      recurring: z.boolean().optional(),
     })
     .array(),
   boardId: z.string(),

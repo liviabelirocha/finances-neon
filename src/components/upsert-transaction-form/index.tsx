@@ -56,10 +56,14 @@ export const UpsertTransactionForm = ({
   isOpen,
   setIsOpen,
   defaultValues,
+  recurring,
+  onSubmit: afterSubmit,
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   defaultValues?: UpsertTransactionFormType;
+  recurring?: boolean;
+  onSubmit?: () => void;
 }) => {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -79,6 +83,10 @@ export const UpsertTransactionForm = ({
     form.setValue("date", set(new Date(), { month, year, date: 1 }));
   }, [month, year]);
 
+  useEffect(() => {
+    if (defaultValues) form.reset(defaultValues);
+  }, [defaultValues]);
+
   const onSubmit = async (data: UpsertTransactionFormType) => {
     await upsertTransaction({
       ...data,
@@ -86,9 +94,11 @@ export const UpsertTransactionForm = ({
       boardId: params.board as string,
       id: data.id ?? "",
       installments: data.installments ? +data.installments : 1,
+      recurring,
     });
     setIsOpen(false);
     form.reset(baseFormValues({ month, year }));
+    afterSubmit?.();
   };
 
   const isUpdate = !!defaultValues?.id;
@@ -153,7 +163,7 @@ export const UpsertTransactionForm = ({
                       <FormLabel>Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -181,7 +191,7 @@ export const UpsertTransactionForm = ({
                       <FormLabel>Method (optional)</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -216,7 +226,7 @@ export const UpsertTransactionForm = ({
                   )}
                 />
 
-                {!isUpdate && (
+                {!isUpdate && !recurring && (
                   <FormField
                     control={form.control}
                     name="installments"

@@ -26,6 +26,7 @@ export const getTransactionsSummaryByCategory = async ({
             }),
         },
       }),
+      recurring: false,
     },
     _sum: { amount: true },
     by: ["tagId"],

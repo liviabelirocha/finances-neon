@@ -23,6 +23,7 @@ export const upsertTransactionSchema = z.object({
   }),
   installments: z.number().positive().optional(),
   tagId: z.string().trim().optional(),
+  recurring: z.boolean().optional(),
 });
 
 export type UpsertTransactionFormType = z.infer<typeof upsertTransactionSchema>;

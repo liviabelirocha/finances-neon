@@ -17,10 +17,12 @@ export const DeleteButton = ({
   id,
   action,
   name,
+  variant = "ghost",
 }: {
   id: string;
   action: (id: string) => Promise<void>;
   name: string;
+  variant?: "ghost" | "destructive";
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -32,8 +34,8 @@ export const DeleteButton = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-muted-foreground">
-          <TrashIcon color="red" />
+        <Button variant={variant} size="sm" className="text-muted-foreground">
+          <TrashIcon color={variant === "ghost" ? "red" : "white"} />
         </Button>
       </DialogTrigger>
       <DialogContent>
