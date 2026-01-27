@@ -130,7 +130,10 @@ export const AddRecurringExpensesForm = ({
 
       <UpsertTransactionForm
         isOpen={isFormOpen}
-        setIsOpen={setIsFormOpen}
+        setIsOpen={(open) => {
+          setIsFormOpen(open);
+          if (!open) setEditingTransaction(undefined);
+        }}
         recurring
         onSubmit={async () => {
           await fetchTransactions();

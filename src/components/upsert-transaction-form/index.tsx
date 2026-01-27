@@ -83,6 +83,10 @@ export const UpsertTransactionForm = ({
     form.setValue("date", set(new Date(), { month, year, date: 1 }));
   }, [month, year]);
 
+  useEffect(() => {
+    if (defaultValues) form.reset(defaultValues);
+  }, [defaultValues]);
+
   const onSubmit = async (data: UpsertTransactionFormType) => {
     await upsertTransaction({
       ...data,
