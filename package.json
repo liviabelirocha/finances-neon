@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run db && next dev",
+    "dev": "npm run setup:db && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
     "db": "prisma db pull && prisma generate",
     "setup:db": "prisma migrate dev && prisma db pull && prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma migrate dev && prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.2.0",
