@@ -9,6 +9,7 @@
     "lint": "next lint",
     "prepare": "husky",
     "db": "prisma db pull && prisma generate",
+    "setup:db": "prisma migrate dev && prisma db pull && prisma generate",
     "postinstall": "prisma generate"
   },
   "dependencies": {
