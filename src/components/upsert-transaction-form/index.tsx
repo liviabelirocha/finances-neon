@@ -163,7 +163,7 @@ export const UpsertTransactionForm = ({
                       <FormLabel>Type</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -191,7 +191,7 @@ export const UpsertTransactionForm = ({
                       <FormLabel>Method (optional)</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger>

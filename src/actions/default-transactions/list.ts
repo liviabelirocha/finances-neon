@@ -8,9 +8,15 @@ export const listDefaultTransactions = async (boardId: string) => {
 
   if (!userId) throw new Error("Unauthorized");
 
-  const transactions = db.transaction.findMany({
-    where: { boardId, recurring: true },
+  const userBoard = await db.userBoard.findFirst({
+    where: { userId, boardId },
   });
 
-  return transactions;
+  if (!userBoard) throw new Error("Unauthorized");
+
+  return db.transaction.findMany({
+    where: { boardId, recurring: true },
+    include: { tag: true },
+    orderBy: { name: "asc" },
+  });
 };

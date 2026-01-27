@@ -2,11 +2,11 @@ import { listDefaultTransactions } from "@/actions/default-transactions/list";
 import { upsertTransaction } from "@/actions/upsert-transaction";
 import { useToast } from "@/hooks/use-toast";
 import { moneyFormat } from "@/lib/money-format";
-import { Transaction as DbTransaction } from "@prisma/client";
+import { Tag, Transaction as DbTransaction } from "@prisma/client";
 import { format, set } from "date-fns";
-import { Edit, Plus } from "lucide-react";
+import { Check, Edit, LoaderCircle, Plus } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import {
@@ -21,6 +21,9 @@ import { UpsertTransactionForm } from "../upsert-transaction-form";
 import { addBulkTransactions } from "@/actions/add-bulk-transactions";
 import { DeleteButton } from "../delete-button";
 import { deleteTransaction } from "@/actions/delete-transaction";
+import { monthTransactions } from "@/actions/transactions/month-transactions";
+
+type TransactionWithTag = DbTransaction & { tag: Tag | null };
 
 export const AddRecurringExpensesForm = ({
   isOpen,
@@ -34,24 +37,49 @@ export const AddRecurringExpensesForm = ({
   const searchParams = useSearchParams();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [transactions, setTransactions] = useState<DbTransaction[]>([]);
+  const [transactions, setTransactions] = useState<TransactionWithTag[]>([]);
+  const [monthlyTransactions, setMonthlyTransactions] = useState<
+    DbTransaction[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<
-    DbTransaction | undefined
+    TransactionWithTag | undefined
   >();
 
   const month = +(searchParams.get("month") ?? new Date().getMonth());
   const year = +(searchParams.get("year") ?? new Date().getFullYear());
+  const boardId = urlParams.board as string;
 
-  const fetchTransactions = async () => {
-    const data = await listDefaultTransactions(urlParams.board as string);
-    setTransactions(data);
-  };
+  const fetchTransactions = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const [recurring, monthly] = await Promise.all([
+        listDefaultTransactions(boardId),
+        monthTransactions({
+          boardId,
+          initialDate: set(new Date(), { month, year, date: 1 }),
+        }),
+      ]);
+      setTransactions(recurring);
+      setMonthlyTransactions(monthly);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [boardId, month, year]);
 
-  const addTransaction = async (transaction: DbTransaction) => {
+  const addedTransactionNames = useMemo(() => {
+    return new Set(monthlyTransactions.map((t) => t.name));
+  }, [monthlyTransactions]);
+
+  const total = useMemo(() => {
+    return transactions.reduce((sum, t) => sum + t.amount, 0);
+  }, [transactions]);
+
+  const addTransaction = async (transaction: TransactionWithTag) => {
     setIsSubmitting(true);
 
-    const date = set(new Date(), { month, year });
+    const date = set(new Date(), { month, year, date: 1 });
 
     try {
       await upsertTransaction({
@@ -60,6 +88,8 @@ export const AddRecurringExpensesForm = ({
         tagId: transaction.tagId ?? undefined,
         recurring: false,
       });
+
+      await fetchTransactions();
 
       toast({
         title: `Transaction added successfully to ${format(date, "MMMM, yyyy")}`,
@@ -74,12 +104,24 @@ export const AddRecurringExpensesForm = ({
   const addAll = async () => {
     setIsSubmitting(true);
 
-    const date = set(new Date(), { month, year });
+    const date = set(new Date(), { month, year, date: 1 });
+
+    const transactionsToAdd = transactions.filter(
+      (t) => !addedTransactionNames.has(t.name),
+    );
+
+    if (transactionsToAdd.length === 0) {
+      toast({
+        title: "All recurring transactions are already added this month",
+      });
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       await addBulkTransactions({
-        boardId: urlParams.board as string,
-        transactions: transactions.map((transaction) => ({
+        boardId,
+        transactions: transactionsToAdd.map((transaction) => ({
           ...transaction,
           date,
           tagId: transaction.tagId ?? undefined,
@@ -88,8 +130,10 @@ export const AddRecurringExpensesForm = ({
         })),
       });
 
+      await fetchTransactions();
+
       toast({
-        title: `Transactions added successfully to ${format(date, "MMMM, yyyy")}`,
+        title: `${transactionsToAdd.length} transaction(s) added to ${format(date, "MMMM, yyyy")}`,
       });
     } catch {
       toast({ title: "Oops. Something went wrong", variant: "destructive" });
@@ -99,12 +143,16 @@ export const AddRecurringExpensesForm = ({
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (isOpen) fetchTransactions();
+  }, [isOpen, fetchTransactions]);
 
   useEffect(() => {
     if (editingTransaction) setIsFormOpen(true);
   }, [editingTransaction]);
+
+  const pendingCount = transactions.filter(
+    (t) => !addedTransactionNames.has(t.name),
+  ).length;
 
   return (
     <>
@@ -129,60 +177,99 @@ export const AddRecurringExpensesForm = ({
               <TooltipTrigger asChild>
                 <Button
                   onClick={addAll}
-                  disabled={isSubmitting || !transactions.length}
+                  disabled={isSubmitting || pendingCount === 0}
                   variant="outline"
                 >
-                  Include all
+                  {pendingCount > 0
+                    ? `Include all (${pendingCount})`
+                    : "Include all"}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add all listed transactions to this month</p>
+                <p>Add all pending transactions to this month</p>
               </TooltipContent>
             </Tooltip>
           </div>
-          {transactions.map((transaction, idx) => (
-            <div key={transaction.id} className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span>
-                  {transaction.name} - {moneyFormat(transaction.amount / 100)}
-                </span>
-                <div className="flex gap-1">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    disabled={isSubmitting}
-                    onClick={() => setEditingTransaction(transaction)}
-                  >
-                    <Edit />
-                  </Button>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        onClick={() => addTransaction(transaction)}
-                        disabled={isSubmitting}
-                      >
-                        <Plus />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Add to this month&apos;s transactions</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <DeleteButton
-                    action={async (id) => {
-                      await deleteTransaction(id);
-                      await fetchTransactions();
-                    }}
-                    id={transaction.id}
-                    name={transaction.name}
-                    variant="destructive"
-                  />
-                </div>
-              </div>
-              {idx !== transactions.length - 1 && <Separator />}
+
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <LoaderCircle className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
-          ))}
+          ) : transactions.length === 0 ? (
+            <div className="py-8 text-center text-muted-foreground">
+              No recurring transactions yet. Add one to get started.
+            </div>
+          ) : (
+            <>
+              {transactions.map((transaction, idx) => {
+                const isAdded = addedTransactionNames.has(transaction.name);
+                return (
+                  <div key={transaction.id} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="flex items-center gap-2">
+                          {transaction.name} -{" "}
+                          {moneyFormat(transaction.amount / 100)}
+                          {isAdded && (
+                            <Check className="h-4 w-4 text-green-500" />
+                          )}
+                        </span>
+                        {transaction.tag && (
+                          <span className="text-xs text-muted-foreground">
+                            {transaction.tag.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={isSubmitting}
+                          onClick={() => setEditingTransaction(transaction)}
+                        >
+                          <Edit />
+                        </Button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="sm"
+                              onClick={() => addTransaction(transaction)}
+                              disabled={isSubmitting}
+                              variant={isAdded ? "outline" : "default"}
+                            >
+                              {isAdded ? <Check /> : <Plus />}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {isAdded
+                                ? "Add another to this month"
+                                : "Add to this month's transactions"}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                        <DeleteButton
+                          action={async (id) => {
+                            await deleteTransaction(id);
+                            await fetchTransactions();
+                          }}
+                          id={transaction.id}
+                          name={transaction.name}
+                          variant="destructive"
+                        />
+                      </div>
+                    </div>
+                    {idx !== transactions.length - 1 && <Separator />}
+                  </div>
+                );
+              })}
+              <Separator />
+              <div className="flex justify-between font-medium">
+                <span>Total</span>
+                <span>{moneyFormat(total / 100)}</span>
+              </div>
+            </>
+          )}
         </SheetContent>
       </Sheet>
 
