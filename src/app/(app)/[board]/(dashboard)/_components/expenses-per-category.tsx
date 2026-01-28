@@ -10,7 +10,7 @@ export const ExpensesPerCategory = ({
   categoriesSummary: Dashboard["categoriesSummary"];
 }) => {
   return (
-    <ScrollArea className="col-span-2 h-full rounded-md border p-6">
+    <ScrollArea className="h-full min-h-[250px] rounded-md border p-4 md:col-span-2 md:p-6">
       <CardHeader>
         <CardTitle className="font-bold">Expenses per Category</CardTitle>
       </CardHeader>

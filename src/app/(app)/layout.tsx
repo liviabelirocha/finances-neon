@@ -15,7 +15,9 @@ export default async function Layout({ children }: PropsWithChildren) {
   return (
     <TooltipProvider>
       <Navbar />
-      <div className="flex-flex-col m-6 h-full overflow-hidden">{children}</div>
+      <div className="flex-flex-col m-4 md:m-6 lg:h-full lg:overflow-hidden">
+        {children}
+      </div>
     </TooltipProvider>
   );
 }
