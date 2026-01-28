@@ -3,32 +3,28 @@
 import { UserButton } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { Logo } from "../logo";
-import { ActiveLink } from "./components/active-link";
 import { GenerateInviteLink } from "./components/generate-invite-link";
+import { NavLinks } from "./components/nav-links";
+import { MobileSheet } from "./components/mobile-sheet";
 
 export const Navbar = () => {
   const params = useParams();
 
   return (
-    <nav className="flex justify-between border-b border-solid px-8 py-4">
-      <div className="flex items-center gap-10">
+    <nav className="flex justify-between border-b border-solid px-4 py-3 md:px-8 md:py-4">
+      <div className="flex items-center gap-4 md:gap-10">
         <Logo />
-        <ActiveLink href="/">Boards</ActiveLink>
-        {params.board && (
-          <>
-            <ActiveLink href={`/${params.board}`} passSearch>
-              Dashboard
-            </ActiveLink>
-            <ActiveLink href={`/${params.board}/transactions`} passSearch>
-              Transactions
-            </ActiveLink>
-          </>
-        )}
+        <div className="hidden md:flex md:items-center md:gap-10">
+          <NavLinks />
+        </div>
       </div>
-      <div className="flex items-center gap-4">
+
+      <div className="hidden md:flex md:items-center md:gap-4">
         {params.board && <GenerateInviteLink />}
         <UserButton showName />
       </div>
+
+      <MobileSheet />
     </nav>
   );
 };
