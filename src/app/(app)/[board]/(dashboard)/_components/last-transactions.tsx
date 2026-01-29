@@ -41,7 +41,7 @@ export const LastTransactions = ({
   const params = useParams();
 
   return (
-    <ScrollArea className="rounded-md border">
+    <ScrollArea className="h-fit rounded-md border lg:h-full">
       <CardHeader className="flex-row items-center justify-between">
         <CardTitle className="font-bold">Last Transactions</CardTitle>
         <Button variant="outline" className="rounded-full font-bold">
@@ -52,10 +52,10 @@ export const LastTransactions = ({
         {lastTransactions.map((transaction) => (
           <div
             key={transaction.id}
-            className="flex items-center justify-between"
+            className="flex items-center justify-between gap-2"
           >
             <div className="flex items-center gap-2">
-              <div className="rounded-lg bg-white bg-opacity-[3%] p-3">
+              <div className="shrink-0 rounded-lg bg-white bg-opacity-[3%] p-2 md:p-3">
                 <Image
                   src={TRANSACTION_METHOD_OPTIONS_ICONS[transaction.method]}
                   height={20}
@@ -63,9 +63,11 @@ export const LastTransactions = ({
                   alt={TRANSACTION_METHOD_OPTIONS_ICONS[transaction.method]}
                 />
               </div>
-              <div>
-                <div className="text-sm font-bold">{transaction.name}</div>
-                <div className="text-sm text-muted-foreground">
+              <div className="min-w-0">
+                <div className="truncate text-sm font-bold">
+                  {transaction.name}
+                </div>
+                <div className="text-xs text-muted-foreground md:text-sm">
                   {new Date(transaction.date).toLocaleDateString("en-US", {
                     month: "long",
                     year: "numeric",
@@ -75,7 +77,7 @@ export const LastTransactions = ({
             </div>
 
             <p
-              className={`text-sm font-bold ${getPriceColor(transaction.type)}`}
+              className={`shrink-0 text-sm font-bold ${getPriceColor(transaction.type)}`}
             >
               {getPrefix(transaction.type)}
               {moneyFormat(transaction.amount / 100)}

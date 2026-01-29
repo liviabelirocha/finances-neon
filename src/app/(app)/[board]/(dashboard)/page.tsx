@@ -30,12 +30,10 @@ export default async function Dashboard({
   const dashboard = await getDashboard(dashParams);
 
   return (
-    <div className="flex flex-col space-y-6 overflow-hidden">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-        </div>
-        <div className="flex gap-2">
+    <div className="flex flex-col space-y-6 lg:overflow-hidden">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
+        <div className="flex flex-wrap items-center gap-2">
           <VisualizationTabs />
           {/* <AiReportButton {...dashParams} /> */}
           <MonthSelector {...dashParams} />
@@ -43,10 +41,10 @@ export default async function Dashboard({
         </div>
       </div>
 
-      <div className="grid h-full grid-cols-[2fr,1fr] gap-6 overflow-hidden">
-        <div className="flex flex-col gap-6 overflow-hidden">
+      <div className="flex flex-col gap-6 overflow-auto lg:grid lg:h-full lg:grid-cols-[2fr,1fr] lg:overflow-hidden">
+        <div className="flex flex-col gap-6 lg:overflow-hidden">
           <SummaryCards {...dashboard} />
-          <div className="grid h-full grid-cols-3 grid-rows-1 gap-6 overflow-hidden">
+          <div className="flex flex-col gap-6 md:grid md:h-full md:grid-cols-3 md:grid-rows-1 md:overflow-hidden">
             <TransactionsPieChart {...dashboard} />
             <ExpensesPerCategory {...dashboard} />
           </div>

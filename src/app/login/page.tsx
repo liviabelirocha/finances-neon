@@ -15,11 +15,11 @@ export default async function LoginPage({
   if (userId) redirect(searchParams.redirectTo || "/");
 
   return (
-    <div className="mx-auto flex h-full flex-col justify-center p-8">
+    <div className="mx-auto flex h-full max-w-md flex-col justify-center px-4 py-8 sm:p-8">
       <Logo />
 
-      <h1 className="mb-3 text-4xl font-bold">Welcome</h1>
-      <p className="mb-8 text-muted-foreground">
+      <h1 className="mb-3 text-2xl font-bold sm:text-4xl">Welcome</h1>
+      <p className="mb-6 text-sm text-muted-foreground sm:mb-8 sm:text-base">
         Finances Neon is a financial management platform.
       </p>
       <SignInButton>

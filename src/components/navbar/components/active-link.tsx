@@ -6,10 +6,12 @@ export const ActiveLink = ({
   children,
   passSearch,
   href,
+  onClick,
   ...props
 }: LinkProps &
   PropsWithChildren & {
     passSearch?: boolean;
+    onClick?: () => void;
   }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -20,6 +22,7 @@ export const ActiveLink = ({
         pathname === href ? "font-bold text-primary" : "text-muted-foreground"
       }
       href={`${href}${passSearch ? `?${searchParams.toString()}` : ""}`}
+      onClick={onClick}
       {...props}
     >
       {children}

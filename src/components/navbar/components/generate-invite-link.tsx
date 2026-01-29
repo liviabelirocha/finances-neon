@@ -19,8 +19,10 @@ export const GenerateInviteLink = () => {
   };
 
   return (
-    <Button onClick={generateLink}>
-      Generate invite link <Link />
+    <Button className="w-full md:w-auto" onClick={generateLink}>
+      <span className="hidden sm:inline">Generate invite link</span>
+      <span className="sm:hidden">Share board</span>
+      <Link className="h-4 w-4" />
     </Button>
   );
 };
