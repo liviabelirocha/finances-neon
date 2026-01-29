@@ -14,8 +14,9 @@ export const AddTransactionButton = () => {
         className="rounded-full font-bold"
         onClick={() => setIsSheetOpen(true)}
       >
-        Add transaction
-        <ArrowDownUpIcon />
+        <span className="hidden sm:inline">Add transaction</span>
+        <span className="sm:hidden">Add</span>
+        <ArrowDownUpIcon className="h-4 w-4" />
       </Button>
 
       <UpsertTransactionForm isOpen={isSheetOpen} setIsOpen={setIsSheetOpen} />

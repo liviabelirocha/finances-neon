@@ -49,8 +49,8 @@ export default async function Page({
   return (
     <ScrollArea>
       <div className="space-y-6">
-        <div className="flex w-full items-center justify-between">
-          <h1 className="text-2xl font-bold">Transactions</h1>
+        <div className="flex flex-col gap-4 sm:w-full sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-xl font-bold sm:text-2xl">Transactions</h1>
           <div className="flex gap-2">
             <MonthPicker />
             <AddTransactionButton />
