@@ -40,6 +40,7 @@ export default async function Page({
           months: 1,
         }),
       },
+      recurring: false,
     },
     orderBy: {
       date: "asc",
