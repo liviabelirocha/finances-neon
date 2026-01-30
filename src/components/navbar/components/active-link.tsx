@@ -5,23 +5,27 @@ import { PropsWithChildren } from "react";
 export const ActiveLink = ({
   children,
   passSearch,
+  matchPrefix,
   href,
   onClick,
   ...props
 }: LinkProps &
   PropsWithChildren & {
     passSearch?: boolean;
+    matchPrefix?: boolean;
     onClick?: () => void;
   }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const hrefString = href.toString();
+  const isActive = matchPrefix
+    ? pathname.startsWith(hrefString)
+    : pathname === hrefString;
 
   return (
     <Link
-      className={
-        pathname === href ? "font-bold text-primary" : "text-muted-foreground"
-      }
-      href={`${href}${passSearch ? `?${searchParams.toString()}` : ""}`}
+      className={isActive ? "font-bold text-primary" : "text-muted-foreground"}
+      href={`${hrefString}${passSearch ? `?${searchParams.toString()}` : ""}`}
       onClick={onClick}
       {...props}
     >

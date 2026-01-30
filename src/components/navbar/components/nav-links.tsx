@@ -21,6 +21,13 @@ export const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => {
           >
             Transactions
           </ActiveLink>
+          <ActiveLink
+            href={`/${params.board}/settings`}
+            matchPrefix
+            onClick={onNavigate}
+          >
+            Settings
+          </ActiveLink>
         </>
       )}
     </>
