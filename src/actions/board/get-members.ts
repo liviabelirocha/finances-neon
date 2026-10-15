@@ -1,7 +1,8 @@
 "use server";
 
+import { assertBoardMember } from "@/lib/board-member";
 import { db } from "@/lib/prisma";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export type BoardMember = {
   id: string;
@@ -15,15 +16,7 @@ export type BoardMember = {
 export const getBoardMembers = async (
   boardId: string,
 ): Promise<BoardMember[]> => {
-  const { userId: currentUserId } = await auth();
-
-  if (!currentUserId) throw new Error("Unauthorized");
-
-  const currentUserBoard = await db.userBoard.findFirst({
-    where: { boardId, userId: currentUserId },
-  });
-
-  if (!currentUserBoard) throw new Error("Not a member of this board");
+  const currentUserId = await assertBoardMember(boardId);
 
   const userBoards = await db.userBoard.findMany({
     where: { boardId },

@@ -30,9 +30,11 @@ A multi-user personal finance management application for tracking income, expens
 
 - CSV bulk import with validation
 
-### AI Reports
+### Daily Budget (AUVP)
 
-- AI-powered monthly financial analysis (requires Mistral API key)
+- Connect an AUVP Financeiro API key per board (Settings → Integrations)
+- See how much you can spend each day based on what came in and went out
+- Each day is green, yellow or red depending on how much of the daily budget was spent
 
 ## Tech Stack
 
@@ -77,8 +79,8 @@ A multi-user personal finance management application for tracking income, expens
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
    CLERK_SECRET_KEY=
 
-   # Optional: for AI reports
-   MISTRAL_API_KEY=
+   # Encrypts the per-board AUVP API key (any random secret)
+   INTEGRATIONS_ENCRYPTION_KEY=
    ```
 
 5. Set up the database:

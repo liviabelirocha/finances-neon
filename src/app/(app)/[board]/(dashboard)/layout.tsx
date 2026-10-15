@@ -1,15 +1,3 @@
-"use client";
+import { SearchParamsQueryProvider } from "../_components/search-params-query-provider";
 
-import { QueryProvider } from "@/contexts/query-context";
-import { useSearchParams } from "next/navigation";
-import React from "react";
-
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const searchParams = useSearchParams();
-
-  return (
-    <QueryProvider defaultParams={Object.fromEntries(searchParams.entries())}>
-      {children}
-    </QueryProvider>
-  );
-}
+export default SearchParamsQueryProvider;

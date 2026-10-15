@@ -1,7 +1,7 @@
 "use server";
 
+import { assertBoardMember } from "@/lib/board-member";
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export const removeBoardMember = async ({
@@ -11,15 +11,7 @@ export const removeBoardMember = async ({
   boardId: string;
   userId: string;
 }) => {
-  const { userId: currentUserId } = await auth();
-
-  if (!currentUserId) throw new Error("Unauthorized");
-
-  const currentUserBoard = await db.userBoard.findFirst({
-    where: { boardId, userId: currentUserId },
-  });
-
-  if (!currentUserBoard) throw new Error("Not a member of this board");
+  const currentUserId = await assertBoardMember(boardId);
 
   if (userId === currentUserId)
     throw new Error("Cannot remove yourself. Use leave board instead.");

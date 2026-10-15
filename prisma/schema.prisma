@@ -8,11 +8,13 @@ datasource db {
 }
 
 model Board {
-  id          String        @id @default(uuid())
-  name        String
-  Tag         Tag[]
-  Transaction Transaction[]
-  UserBoard   UserBoard[]
+  id             String            @id @default(uuid())
+  name           String
+  Integration    BoardIntegration?
+  ExpectedIncome ExpectedIncome[]
+  Tag            Tag[]
+  Transaction    Transaction[]
+  UserBoard      UserBoard[]
 }
 
 model UserBoard {
@@ -46,6 +48,30 @@ model Tag {
   boardId     String
   board       Board         @relation(fields: [boardId], references: [id], onDelete: Cascade)
   Transaction Transaction[]
+}
+
+model BoardIntegration {
+  id              String    @id @default(uuid())
+  boardId         String    @unique
+  auvpApiKey      String?
+  auvpValidatedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  board           Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+}
+
+/// Income the user expects to receive in a month (amount in cents); month is 0-11.
+model ExpectedIncome {
+  id        String   @id @default(uuid())
+  boardId   String
+  year      Int
+  month     Int
+  amount    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@unique([boardId, year, month])
 }
 
 enum TransactionType {

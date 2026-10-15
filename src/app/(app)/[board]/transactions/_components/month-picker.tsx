@@ -1,8 +1,8 @@
 "use client";
 
 import { MonthSelector } from "@/components/month-selector";
-import { QueryProvider } from "@/contexts/query-context";
 import { useSearchParams } from "next/navigation";
+import { SearchParamsQueryProvider } from "../../_components/search-params-query-provider";
 
 export const MonthPicker = () => {
   const searchParams = useSearchParams();
@@ -11,8 +11,8 @@ export const MonthPicker = () => {
   const year = +(searchParams.get("year") ?? new Date().getFullYear());
 
   return (
-    <QueryProvider defaultParams={Object.fromEntries(searchParams.entries())}>
+    <SearchParamsQueryProvider>
       <MonthSelector month={month} year={year} />
-    </QueryProvider>
+    </SearchParamsQueryProvider>
   );
 };

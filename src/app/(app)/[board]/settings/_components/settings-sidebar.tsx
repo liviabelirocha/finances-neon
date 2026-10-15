@@ -1,13 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Settings, Tag } from "lucide-react";
+import { Plug, Settings, Tag } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
 const settingsLinks = [
   { href: "general", label: "General", icon: Settings },
   { href: "categories", label: "Categories", icon: Tag },
+  { href: "integrations", label: "Integrations", icon: Plug },
 ];
 
 export function SettingsSidebar() {

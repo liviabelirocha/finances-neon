@@ -77,9 +77,12 @@ Month/year filters use URL search params managed via `QueryContext` in `src/cont
 | `/login` | Clerk sign-in |
 | `/[boardId]` | Dashboard for a board |
 | `/[boardId]/transactions` | Transaction list |
+| `/[boardId]/cash-flow` | Daily budget from AUVP: available vs. spent per day (needs an AUVP key) |
+| `/[boardId]/settings/integrations` | Per-board AUVP API key |
 | `/join?board=<id>` | Join board via invite |
 
 ## Environment Variables
 
 - `DATABASE_URL` - PostgreSQL connection string
 - Clerk environment variables (see Clerk docs)
+- `INTEGRATIONS_ENCRYPTION_KEY` - Secret used to encrypt the per-board AUVP API key (AES-256-GCM)

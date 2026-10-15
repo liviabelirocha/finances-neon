@@ -35,7 +35,6 @@ export default async function Dashboard({
         <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
         <div className="flex flex-wrap items-center gap-2">
           <VisualizationTabs />
-          {/* <AiReportButton {...dashParams} /> */}
           <MonthSelector {...dashParams} />
           <DashFeatureList />
         </div>

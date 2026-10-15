@@ -12,7 +12,7 @@ The main organizational unit. Users can belong to multiple boards.
 | id | UUID | Primary key |
 | name | String | Board name |
 
-**Relations**: Has many `Tag`, `Transaction`, `UserBoard`
+**Relations**: Has many `Tag`, `Transaction`, `UserBoard`, `ExpectedIncome`; has one `BoardIntegration`
 
 ### UserBoard
 Many-to-many join table between users and boards.
@@ -22,6 +22,25 @@ Many-to-many join table between users and boards.
 | id | UUID | Primary key |
 | userId | String | Clerk user ID |
 | boardId | String | FK to Board (cascade delete) |
+
+### BoardIntegration
+Per-board AUVP integration (1:1 with Board, cascade delete).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| boardId | String | Unique FK to Board |
+| auvpApiKey | String? | Encrypted AUVP Financeiro API key |
+| auvpValidatedAt | DateTime? | Last successful validation |
+
+### ExpectedIncome
+Income expected for a month — the daily budget's base (unique per board/year/month).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| boardId | String | FK to Board (cascade delete) |
+| year | Int | Year |
+| month | Int | Month, **0-11** (same as URL params) |
+| amount | Int | Expected income in **cents** |
 
 ### Transaction
 Financial transaction record.
@@ -70,6 +89,8 @@ Deleting a Board cascades to:
 - All `UserBoard` records
 - All `Transaction` records
 - All `Tag` records
+- Its `BoardIntegration` (stored AUVP key)
+- All `ExpectedIncome` records
 
 ## Commands
 

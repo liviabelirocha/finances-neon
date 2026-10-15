@@ -3,6 +3,7 @@
 All server actions follow these conventions:
 - Marked with `"use server"` directive
 - Validate authentication via `auth()` from `@/lib/auth`
+- Board-scoped actions call `assertBoardMember(boardId)` from `@/lib/board-member` (throws unless the user belongs to the board, returns their `userId`)
 - Use Zod schemas for input validation (in separate `schema.ts` files)
 - Call `revalidatePath()` after mutations to refresh UI
 
@@ -61,10 +62,26 @@ Creates a new tag (category) for a board.
 ### `tags/list.ts`
 Lists all tags for a given board.
 
-## AI Features
+## Integrations
 
-### `generate-ai-report/index.ts`
-Generates an AI-powered financial report using Mistral API. Takes transaction data and returns markdown analysis.
+### `integrations/save.ts` / `remove.ts` / `get-status.ts`
+Manage the per-board AUVP API key (`BoardIntegration`). The key is validated with a live call before saving, stored encrypted (`lib/crypto.ts`) and never returned to the client — `get-status` only exposes `configured` and the last 4 chars (`last4` is null when the stored key can't be decrypted, e.g. after rotating `INTEGRATIONS_ENCRYPTION_KEY`); its `isIntegrationConfigured` is a cheap no-decrypt check used by the navbar. A key is only reported invalid when AUVP answers 401/403; other failures throw. Decryption lives in `lib/integrations.ts` (server-only), not in an action.
+
+## Daily Budget (AUVP)
+
+### `cash-flow/get-daily.ts`
+Fetches the month's transactions (all accounts, with a day of margin on each side since AUVP dates may be read as UTC) from the AUVP API (`lib/auvp.ts`) and builds the daily budget with `cash-flow/build-daily.ts`. Spending comes only from AUVP — not from this app's own transactions:
+- Requires the month's **expected income** (`ExpectedIncome`); without it returns `missing-income` with the latest registered amount as a suggestion. It is fixed upfront because weekly paychecks would make a budget based on received income jump.
+- **Available per day** = (expected income − spent before that day) ÷ remaining days; future days share what is left evenly.
+- **Spent** counts purchases on the purchase date (debit, PIX and credit card). Bill payments, transfers between own accounts (`is_internal_transfer`) and ignored transactions are excluded.
+- **Status**: `good` (< 80% of available), `warning` (80–100%), `bad` (> 100%).
+- **savedVsPace** = even share of the expected income for the elapsed days − spent so far.
+- `receivedIncome` (bank credits in the month) is returned for comparison only.
+
+## Expected Income
+
+### `expected-income/upsert.ts`
+Creates or updates the expected income (cents) for a board's month (`month` is 0-11, like the URL params).
 
 ## Adding New Actions
 
