@@ -1,6 +1,6 @@
 import { Dashboard } from "@/actions/transactions/types";
 import { AddTransactionButton } from "@/components/add-transaction-button";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import {
   PiggyBankIcon,
   TrendingDownIcon,
@@ -23,9 +23,7 @@ export const SummaryCards = ({
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-2xl font-bold sm:text-4xl">
-            {moneyFormat(
-              (INCOME.total - INVESTMENT.total - EXPENSE.total) / 100,
-            )}
+            {formatCents(INCOME.total - INVESTMENT.total - EXPENSE.total)}
           </p>
           <AddTransactionButton />
         </div>
@@ -38,7 +36,7 @@ export const SummaryCards = ({
           className="bg-white bg-opacity-5"
         >
           <p className="text-xl font-bold sm:text-2xl">
-            {moneyFormat(INVESTMENT.total / 100)}
+            {formatCents(INVESTMENT.total)}
           </p>
         </SummaryCard>
         <SummaryCard
@@ -46,7 +44,7 @@ export const SummaryCards = ({
           title="Income"
         >
           <p className="text-xl font-bold sm:text-2xl">
-            {moneyFormat(INCOME.total / 100)}
+            {formatCents(INCOME.total)}
           </p>
         </SummaryCard>
         <SummaryCard
@@ -54,7 +52,7 @@ export const SummaryCards = ({
           title="Expenses"
         >
           <p className="text-xl font-bold sm:text-2xl">
-            {moneyFormat(EXPENSE.total / 100)}
+            {formatCents(EXPENSE.total)}
           </p>
         </SummaryCard>
       </div>

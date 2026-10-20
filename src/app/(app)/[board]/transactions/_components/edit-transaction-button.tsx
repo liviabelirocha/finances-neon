@@ -1,5 +1,6 @@
 "use client";
 
+import { fromCents } from "@/lib/money-format";
 import { Button } from "@/components/ui/button";
 import { UpsertTransactionForm } from "@/components/upsert-transaction-form";
 import { Transaction } from "@prisma/client";
@@ -29,7 +30,7 @@ export const EditTransactionButton = ({
         setIsOpen={setIsSheetOpen}
         defaultValues={{
           id: transaction.id,
-          amount: transaction.amount / 100,
+          amount: fromCents(transaction.amount),
           date: transaction.date,
           name: transaction.name,
           type: transaction.type,

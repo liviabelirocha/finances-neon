@@ -1,5 +1,6 @@
 "use client";
 
+import { toCents } from "@/lib/money-format";
 import { upsertTransaction } from "@/actions/upsert-transaction";
 import {
   TRANSACTION_METHOD_OPTIONS,
@@ -90,7 +91,7 @@ export const UpsertTransactionForm = ({
   const onSubmit = async (data: UpsertTransactionFormType) => {
     await upsertTransaction({
       ...data,
-      amount: +data.amount * 100,
+      amount: toCents(data.amount),
       boardId: params.board as string,
       id: data.id ?? "",
       installments: data.installments ? +data.installments : 1,

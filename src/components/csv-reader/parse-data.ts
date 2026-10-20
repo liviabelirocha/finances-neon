@@ -1,3 +1,4 @@
+import { toCents } from "@/lib/money-format";
 import { parse } from "date-fns";
 import {
   UpsertTransactionFormType,
@@ -26,7 +27,7 @@ export const parseFile = (file: RawFileRow[]): ParsedFile => {
       const parsedData = upsertTransactionSchema.parse({
         name,
         type: type.toUpperCase(),
-        amount: normalizedAmount(amount) * 100,
+        amount: toCents(normalizedAmount(amount)),
         date: parse(date, "d/M/yyyy", new Date()),
         method: paymentMethod.toUpperCase(),
       });

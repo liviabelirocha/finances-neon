@@ -1,5 +1,6 @@
 "use client";
 
+import { fromCents, toCents } from "@/lib/money-format";
 import { upsertExpectedIncome } from "@/actions/expected-income/upsert";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +47,9 @@ export const ExpectedIncomeForm = ({
 
   const form = useForm<ExpectedIncomeFormType>({
     resolver: zodResolver(expectedIncomeFormSchema),
-    defaultValues: { amount: defaultAmount ? defaultAmount / 100 : undefined },
+    defaultValues: {
+      amount: defaultAmount ? fromCents(defaultAmount) : undefined,
+    },
   });
 
   const onSubmit = async ({ amount }: ExpectedIncomeFormType) => {
@@ -55,7 +58,7 @@ export const ExpectedIncomeForm = ({
         boardId,
         month,
         year,
-        amount: Math.round(amount * 100),
+        amount: toCents(amount),
       });
       onSaved?.();
     } catch {

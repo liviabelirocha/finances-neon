@@ -3,7 +3,7 @@
 import { deleteTransaction } from "@/actions/delete-transaction";
 import { DeleteButton } from "@/components/delete-button";
 import { Button } from "@/components/ui/button";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
         </Button>
       );
     },
-    cell: ({ row: { original } }) => moneyFormat(original.amount / 100),
+    cell: ({ row: { original } }) => formatCents(original.amount),
   },
   {
     accessorKey: "actions",

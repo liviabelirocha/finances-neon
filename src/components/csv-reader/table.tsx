@@ -1,7 +1,7 @@
 "use client";
 
 import { TypeBadge } from "@/app/(app)/[board]/transactions/_components/type-badge";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { ColumnDef } from "@tanstack/react-table";
 import { ParsedFile } from "./parse-data";
 
@@ -27,6 +27,6 @@ export const columns: ColumnDef<ParsedFile["data"][number]>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({ row: { original } }) => moneyFormat(original.amount / 100),
+    cell: ({ row: { original } }) => formatCents(original.amount),
   },
 ];

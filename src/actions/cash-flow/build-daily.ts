@@ -1,3 +1,4 @@
+import { toCents } from "@/lib/money-format";
 import type { AuvpAccount, AuvpTransaction } from "@/lib/auvp";
 
 const TIMEZONE = "America/Sao_Paulo";
@@ -38,8 +39,6 @@ export type DailyBudget = {
   /** What is still left of the expected income for the rest of the month. */
   remaining: number;
 };
-
-const toCents = (value: number | string) => Math.round(Number(value) * 100);
 
 export const toDayKey = (date: Date | string) =>
   new Date(date).toLocaleDateString("en-CA", { timeZone: TIMEZONE });

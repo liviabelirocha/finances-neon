@@ -1,5 +1,6 @@
 "use client";
 
+import { fromCents } from "@/lib/money-format";
 import { Dashboard } from "@/actions/transactions/types";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -36,17 +37,17 @@ export const TransactionsPieChart = ({
   const chartData = [
     {
       type: TransactionType.INCOME,
-      amount: INCOME.total / 100,
+      amount: fromCents(INCOME.total),
       fill: "#55B02E",
     },
     {
       type: TransactionType.EXPENSE,
-      amount: EXPENSE.total / 100,
+      amount: fromCents(EXPENSE.total),
       fill: "#E93030",
     },
     {
       type: TransactionType.INVESTMENT,
-      amount: INVESTMENT.total / 100,
+      amount: fromCents(INVESTMENT.total),
       fill: "#FFFFFF",
     },
   ];

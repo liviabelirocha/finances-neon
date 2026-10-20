@@ -2,7 +2,7 @@ import { Dashboard } from "@/actions/transactions/types";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 
 export const ExpensesPerCategory = ({
   categoriesSummary,
@@ -28,7 +28,7 @@ export const ExpensesPerCategory = ({
               </div>
               <Progress value={category.percentage} />
               <p className="text-sm font-bold text-muted-foreground">
-                {moneyFormat(category.total / 100)}
+                {formatCents(category.total)}
               </p>
             </div>
           );

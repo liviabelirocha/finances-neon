@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -21,7 +21,7 @@ const Amount = ({ cents }: { cents: number }) =>
     <span className="text-muted-foreground">—</span>
   ) : (
     <span className={cents > 0 ? "text-green-500" : "text-red-500"}>
-      {moneyFormat(cents / 100)}
+      {formatCents(cents)}
     </span>
   );
 
@@ -88,10 +88,10 @@ export const CashFlowTable = ({
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    {moneyFormat(day.available / 100)}
+                    {formatCents(day.available)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {day.projected ? "—" : moneyFormat(day.spent / 100)}
+                    {day.projected ? "—" : formatCents(day.spent)}
                   </TableCell>
                   <TableCell
                     className="text-right font-medium"
@@ -99,7 +99,7 @@ export const CashFlowTable = ({
                       color: day.status ? STATUS_COLOR[day.status] : undefined,
                     }}
                   >
-                    {day.projected ? "—" : moneyFormat(day.saved / 100)}
+                    {day.projected ? "—" : formatCents(day.saved)}
                   </TableCell>
                 </TableRow>
                 {isOpen &&

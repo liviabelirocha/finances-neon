@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { cn } from "@/lib/utils";
 import { CalendarClockIcon, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -56,10 +56,10 @@ export const ExpectedIncomeCard = ({
       ) : (
         <>
           <p className="text-xl font-bold sm:text-2xl">
-            {moneyFormat(expectedIncome / 100)}
+            {formatCents(expectedIncome)}
           </p>
           <p className="text-sm text-muted-foreground">
-            {moneyFormat(receivedIncome / 100)} received so far
+            {formatCents(receivedIncome)} received so far
           </p>
           <p
             className={cn(
@@ -67,7 +67,7 @@ export const ExpectedIncomeCard = ({
               remaining < 0 && "text-red-500",
             )}
           >
-            {moneyFormat(remaining / 100)} left this month
+            {formatCents(remaining)} left this month
           </p>
         </>
       )}

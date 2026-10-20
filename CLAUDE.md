@@ -59,7 +59,7 @@ All data mutations use Next.js server actions in `src/actions/`. Each action:
 - Calls `revalidatePath()` after mutations
 
 ### Money Handling
-Amounts are stored as **integers (cents)** in the database. Use `moneyFormat()` from `lib/money-format.ts` for display.
+Amounts are stored as **integers (cents)** in the database. Use the helpers in `lib/money-format.ts` instead of `/ 100` or `* 100` by hand: `formatCents()` to display a stored amount, `fromCents()` and `toCents()` to convert between cents and form values, and `moneyFormat()` only for values already in dollars (like chart axes).
 
 ### URL-Based State
 Month/year filters use URL search params managed via `QueryContext` in `src/contexts/query-context.tsx`.

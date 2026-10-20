@@ -8,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { moneyFormat } from "@/lib/money-format";
+import { moneyFormat, fromCents } from "@/lib/money-format";
 import {
   Bar,
   CartesianGrid,
@@ -28,8 +28,8 @@ const chartConfig = {
 export const CashFlowChart = ({ days }: { days: BudgetDay[] }) => {
   const chartData = days.map((day) => ({
     day: day.date.slice(8),
-    spent: day.projected ? null : day.spent / 100,
-    available: day.available / 100,
+    spent: day.projected ? null : fromCents(day.spent),
+    available: fromCents(day.available),
     status: day.status,
   }));
 

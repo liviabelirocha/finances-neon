@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TRANSACTION_METHOD_OPTIONS_ICONS } from "@/constants/transactions";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { TransactionType } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -80,7 +80,7 @@ export const LastTransactions = ({
               className={`shrink-0 text-sm font-bold ${getPriceColor(transaction.type)}`}
             >
               {getPrefix(transaction.type)}
-              {moneyFormat(transaction.amount / 100)}
+              {formatCents(transaction.amount)}
             </p>
           </div>
         ))}

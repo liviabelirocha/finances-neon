@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents } from "@/lib/money-format";
 import { format } from "date-fns";
 import { PiggyBankIcon, WalletIcon } from "lucide-react";
 import Link from "next/link";
@@ -109,15 +109,15 @@ export default async function CashFlowPage({
                 className="bg-white bg-opacity-5"
               >
                 <p className="text-xl font-bold sm:text-2xl">
-                  {moneyFormat(
-                    (todayBudget
+                  {formatCents(
+                    todayBudget
                       ? todayBudget.available - todayBudget.spent
-                      : budget.remaining) / 100,
+                      : budget.remaining,
                   )}
                 </p>
                 {todayBudget && (
                   <p className="text-sm text-muted-foreground">
-                    of {moneyFormat(todayBudget.available / 100)} for the day
+                    of {formatCents(todayBudget.available)} for the day
                   </p>
                 )}
               </SummaryCard>
@@ -132,10 +132,10 @@ export default async function CashFlowPage({
                       STATUS_COLOR[budget.savedVsPace >= 0 ? "good" : "bad"],
                   }}
                 >
-                  {moneyFormat(budget.savedVsPace / 100)}
+                  {formatCents(budget.savedVsPace)}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  spent {moneyFormat(budget.spent / 100)} so far
+                  spent {formatCents(budget.spent)} so far
                 </p>
               </SummaryCard>
               <ExpectedIncomeCard

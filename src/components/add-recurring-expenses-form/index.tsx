@@ -1,7 +1,7 @@
 import { listDefaultTransactions } from "@/actions/default-transactions/list";
 import { upsertTransaction } from "@/actions/upsert-transaction";
 import { useToast } from "@/hooks/use-toast";
-import { moneyFormat } from "@/lib/money-format";
+import { formatCents, fromCents } from "@/lib/money-format";
 import { Tag, Transaction as DbTransaction } from "@prisma/client";
 import { format, set } from "date-fns";
 import { Check, Edit, LoaderCircle, Plus } from "lucide-react";
@@ -208,8 +208,7 @@ export const AddRecurringExpensesForm = ({
                     <div className="flex items-center justify-between">
                       <div className="flex flex-col">
                         <span className="flex items-center gap-2">
-                          {transaction.name} -{" "}
-                          {moneyFormat(transaction.amount / 100)}
+                          {transaction.name} - {formatCents(transaction.amount)}
                           {isAdded && (
                             <Check className="h-4 w-4 text-green-500" />
                           )}
@@ -266,7 +265,7 @@ export const AddRecurringExpensesForm = ({
               <Separator />
               <div className="flex justify-between font-medium">
                 <span>Total</span>
-                <span>{moneyFormat(total / 100)}</span>
+                <span>{formatCents(total)}</span>
               </div>
             </>
           )}
@@ -288,7 +287,7 @@ export const AddRecurringExpensesForm = ({
         defaultValues={
           editingTransaction && {
             id: editingTransaction.id,
-            amount: editingTransaction.amount / 100,
+            amount: fromCents(editingTransaction.amount),
             date: editingTransaction.date,
             name: editingTransaction.name,
             type: editingTransaction.type,
