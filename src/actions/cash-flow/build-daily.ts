@@ -1,7 +1,8 @@
+import { formatDayKey, monthStart, toDayKey } from "@/lib/date";
+import { addDays, endOfMonth, getDaysInMonth } from "date-fns";
 import { toCents } from "@/lib/money-format";
 import type { AuvpAccount, AuvpTransaction } from "@/lib/auvp";
 
-const TIMEZONE = "America/Sao_Paulo";
 const WARNING_RATIO = 0.8;
 
 export type DayStatus = "good" | "warning" | "bad";
@@ -40,39 +41,6 @@ export type DailyBudget = {
   remaining: number;
 };
 
-export const toDayKey = (date: Date | string) =>
-  new Date(date).toLocaleDateString("en-CA", { timeZone: TIMEZONE });
-
-/** YYYY-MM-DD for a day of the month (0-11), clamped to the month length. */
-export const dayKey = (year: number, month: number, day: number) => {
-  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-
-  return [
-    year,
-    String(month + 1).padStart(2, "0"),
-    String(Math.min(day, lastDay)).padStart(2, "0"),
-  ].join("-");
-};
-
-/** Moves a YYYY-MM-DD key by a number of days. */
-export const shiftDayKey = (key: string, days: number) => {
-  const [year, month, day] = key.split("-").map(Number);
-
-  return new Date(Date.UTC(year, month - 1, day + days))
-    .toISOString()
-    .slice(0, 10);
-};
-
-/** Current month (0-11) and year in the budget's timezone. */
-export const currentMonth = (now = new Date()) => {
-  const today = toDayKey(now);
-
-  return {
-    year: Number(today.slice(0, 4)),
-    month: Number(today.slice(5, 7)) - 1,
-  };
-};
-
 const dayStatus = (spent: number, available: number): DayStatus => {
   if (spent <= 0) return "good";
   if (available <= 0 || spent > available) return "bad";
@@ -99,9 +67,10 @@ export const buildDailyBudget = ({
   now?: Date;
 }): DailyBudget => {
   const today = toDayKey(now);
-  const monthStart = dayKey(year, month, 1);
-  const monthEnd = dayKey(year, month, 31);
-  const lastDay = Number(monthEnd.slice(8));
+  const firstDay = monthStart({ month, year });
+  const lastDay = getDaysInMonth(firstDay);
+  const from = formatDayKey(firstDay);
+  const to = formatDayKey(endOfMonth(firstDay));
 
   const bankIds = new Set(
     accounts
@@ -117,8 +86,8 @@ export const buildDailyBudget = ({
     const date = toDayKey(transaction.date);
 
     return (
-      date >= monthStart &&
-      date <= monthEnd &&
+      date >= from &&
+      date <= to &&
       date <= today &&
       !transaction.is_internal_transfer &&
       !transaction.ignore
@@ -153,7 +122,7 @@ export const buildDailyBudget = ({
   let projectedAvailable: number | null = null;
 
   const days = Array.from({ length: lastDay }, (_, index) => {
-    const date = dayKey(year, month, index + 1);
+    const date = formatDayKey(addDays(firstDay, index));
     const items = classified
       .filter((entry) => entry.date === date)
       .map(({ item }) => item);

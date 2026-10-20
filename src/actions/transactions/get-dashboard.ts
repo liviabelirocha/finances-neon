@@ -1,6 +1,7 @@
 import { VisualizationType } from "@/app/(app)/[board]/(dashboard)/_components/visualization-tabs";
 import { TransactionType } from "@prisma/client";
-import { set } from "date-fns";
+import { monthStart } from "@/lib/date";
+import { addYears } from "date-fns";
 import { monthTransactions } from "./month-transactions";
 import { getTransactionsSummaryByCategory } from "./summary-by-category";
 import { getTransactionsSummaryByType } from "./summary-by-type";
@@ -17,33 +18,15 @@ export const getDashboard = async ({
   year: number;
   visualization: VisualizationType;
 }): Promise<Dashboard> => {
-  const initialMonth = visualization === "monthly" ? month : 0;
-
   const initialDate =
     visualization === "all-time"
       ? undefined
-      : set(new Date(), {
-          month: initialMonth,
-          year,
-          date: 1,
-          hours: 0,
-          minutes: 0,
-          seconds: 0,
-          milliseconds: 0,
-        });
+      : monthStart({ month: visualization === "monthly" ? month : 0, year });
 
   const endDate =
-    visualization === "monthly" || visualization === "all-time"
-      ? undefined
-      : set(new Date(), {
-          month: 11,
-          year,
-          date: 31,
-          hours: 23,
-          minutes: 59,
-          seconds: 59,
-          milliseconds: 59,
-        });
+    visualization === "yearly" && initialDate
+      ? addYears(initialDate, 1)
+      : undefined;
 
   // by type
   const summaryByType = await getTransactionsSummaryByType({

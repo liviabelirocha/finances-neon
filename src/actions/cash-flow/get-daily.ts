@@ -2,15 +2,11 @@
 
 import { listAccounts, listTransactions } from "@/lib/auvp";
 import { assertBoardMember } from "@/lib/board-member";
+import { formatDayKey, monthStart, toDayKey } from "@/lib/date";
 import { getAuvpApiKey } from "@/lib/integrations";
 import { db } from "@/lib/prisma";
-import {
-  DailyBudget,
-  buildDailyBudget,
-  dayKey,
-  shiftDayKey,
-  toDayKey,
-} from "./build-daily";
+import { addDays, endOfMonth, parseISO, subDays } from "date-fns";
+import { DailyBudget, buildDailyBudget } from "./build-daily";
 
 type DailyBudgetResult =
   | { status: "disabled" }
@@ -35,8 +31,9 @@ export const getDailyBudget = async ({
   if (!auvpApiKey) return { status: "disabled" };
 
   const today = toDayKey(new Date());
-  const from = dayKey(year, month, 1);
-  const to = dayKey(year, month, 31);
+  const firstDay = monthStart({ month, year });
+  const from = formatDayKey(firstDay);
+  const to = formatDayKey(endOfMonth(firstDay));
 
   if (from > today) return { status: "future" };
 
@@ -59,8 +56,8 @@ export const getDailyBudget = async ({
   const [accounts, transactions] = await Promise.all([
     listAccounts(auvpApiKey),
     listTransactions(auvpApiKey, {
-      from: shiftDayKey(from, -1),
-      to: shiftDayKey(to < today ? to : today, 1),
+      from: formatDayKey(subDays(firstDay, 1)),
+      to: formatDayKey(addDays(parseISO(to < today ? to : today), 1)),
     }),
   ]);
 

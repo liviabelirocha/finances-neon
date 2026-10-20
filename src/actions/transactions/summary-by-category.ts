@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/prisma";
-import { add } from "date-fns";
+import { dateRange } from "@/lib/date";
 
 export const getTransactionsSummaryByCategory = async ({
   boardId,
@@ -17,14 +17,7 @@ export const getTransactionsSummaryByCategory = async ({
       boardId,
       type: "EXPENSE",
       ...(initialDate && {
-        date: {
-          gte: initialDate,
-          lt:
-            endDate ??
-            add(initialDate, {
-              months: 1,
-            }),
-        },
+        date: dateRange(initialDate, endDate),
       }),
       recurring: false,
     },

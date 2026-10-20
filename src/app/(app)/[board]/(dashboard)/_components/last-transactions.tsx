@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TRANSACTION_METHOD_OPTIONS_ICONS } from "@/constants/transactions";
+import { formatMonthYear } from "@/lib/date";
 import { formatCents } from "@/lib/money-format";
 import { TransactionType } from "@prisma/client";
 import Image from "next/image";
@@ -68,10 +69,7 @@ export const LastTransactions = ({
                   {transaction.name}
                 </div>
                 <div className="text-xs text-muted-foreground md:text-sm">
-                  {new Date(transaction.date).toLocaleDateString("en-US", {
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {formatMonthYear(transaction.date)}
                 </div>
               </div>
             </div>

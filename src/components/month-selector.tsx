@@ -2,7 +2,7 @@
 
 import { DatePicker } from "@/components/ui/date-picker";
 import { useQuery } from "@/contexts/query-context";
-import { set } from "date-fns";
+import { monthStart } from "@/lib/date";
 import { useState } from "react";
 
 export const MonthSelector = ({
@@ -14,7 +14,7 @@ export const MonthSelector = ({
 }) => {
   const query = useQuery();
 
-  const [date, setDate] = useState(set(new Date(), { month, year }));
+  const [date, setDate] = useState(monthStart({ month, year }));
 
   return (
     <div className="w-fit">

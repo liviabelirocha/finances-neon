@@ -3,6 +3,7 @@
 import { deleteTransaction } from "@/actions/delete-transaction";
 import { DeleteButton } from "@/components/delete-button";
 import { Button } from "@/components/ui/button";
+import { formatMonthYear } from "@/lib/date";
 import { formatCents } from "@/lib/money-format";
 import { Tag, Transaction } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
@@ -53,11 +54,7 @@ export const columns: ColumnDef<Transaction & { tag?: Tag | null }>[] = [
   {
     accessorKey: "date",
     header: "Date",
-    cell: ({ row: { original } }) =>
-      new Date(original.date).toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      }),
+    cell: ({ row: { original } }) => formatMonthYear(original.date),
   },
   {
     accessorKey: "amount",

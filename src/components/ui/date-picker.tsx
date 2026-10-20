@@ -2,6 +2,7 @@
 
 import { Calendar as CalendarIcon } from "lucide-react";
 
+import { formatMonthYear } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 import { MonthPicker } from "./month-picker";
@@ -25,14 +26,7 @@ export const DatePicker = ({
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? (
-            new Date(value).toLocaleDateString("en-US", {
-              month: "long",
-              year: "numeric",
-            })
-          ) : (
-            <span>Pick a date...</span>
-          )}
+          {value ? formatMonthYear(value) : <span>Pick a date...</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

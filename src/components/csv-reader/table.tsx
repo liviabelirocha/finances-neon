@@ -1,6 +1,7 @@
 "use client";
 
 import { TypeBadge } from "@/app/(app)/[board]/transactions/_components/type-badge";
+import { formatMonthYear } from "@/lib/date";
 import { formatCents } from "@/lib/money-format";
 import { ColumnDef } from "@tanstack/react-table";
 import { ParsedFile } from "./parse-data";
@@ -18,11 +19,7 @@ export const columns: ColumnDef<ParsedFile["data"][number]>[] = [
   {
     accessorKey: "date",
     header: "Date",
-    cell: ({ row: { original } }) =>
-      new Date(original.date).toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      }),
+    cell: ({ row: { original } }) => formatMonthYear(original.date),
   },
   {
     accessorKey: "amount",

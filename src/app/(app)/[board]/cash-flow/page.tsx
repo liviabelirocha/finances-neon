@@ -1,4 +1,3 @@
-import { currentMonth } from "@/actions/cash-flow/build-daily";
 import { getDailyBudget } from "@/actions/cash-flow/get-daily";
 import { MonthSelector } from "@/components/month-selector";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { selectedMonth } from "@/lib/date";
 import { formatCents } from "@/lib/money-format";
 import { format } from "date-fns";
 import { PiggyBankIcon, WalletIcon } from "lucide-react";
@@ -29,14 +29,7 @@ export default async function CashFlowPage({
   searchParams: { month?: string; year?: string };
 }) {
   const boardId = (await params).board;
-  // Same timezone as the budget's "today", not the server's clock.
-  const current = currentMonth();
-
-  const pageParams = {
-    boardId,
-    month: Number(searchParams.month ?? current.month),
-    year: Number(searchParams.year ?? current.year),
-  };
+  const pageParams = { boardId, ...selectedMonth(searchParams) };
 
   const budget = await getDailyBudget(pageParams);
 

@@ -3,9 +3,11 @@ import { upsertTransaction } from "@/actions/upsert-transaction";
 import { useToast } from "@/hooks/use-toast";
 import { formatCents, fromCents } from "@/lib/money-format";
 import { Tag, Transaction as DbTransaction } from "@prisma/client";
-import { format, set } from "date-fns";
+import { useSelectedMonth } from "@/hooks/use-selected-month";
+import { monthStart } from "@/lib/date";
+import { format } from "date-fns";
 import { Check, Edit, LoaderCircle, Plus } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -34,7 +36,6 @@ export const AddRecurringExpensesForm = ({
 }) => {
   const { toast } = useToast();
   const urlParams = useParams();
-  const searchParams = useSearchParams();
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [transactions, setTransactions] = useState<TransactionWithTag[]>([]);
@@ -47,8 +48,7 @@ export const AddRecurringExpensesForm = ({
     TransactionWithTag | undefined
   >();
 
-  const month = +(searchParams.get("month") ?? new Date().getMonth());
-  const year = +(searchParams.get("year") ?? new Date().getFullYear());
+  const { month, year } = useSelectedMonth();
   const boardId = urlParams.board as string;
 
   const fetchTransactions = useCallback(async () => {
@@ -58,7 +58,7 @@ export const AddRecurringExpensesForm = ({
         listDefaultTransactions(boardId),
         monthTransactions({
           boardId,
-          initialDate: set(new Date(), { month, year, date: 1 }),
+          initialDate: monthStart({ month, year }),
         }),
       ]);
       setTransactions(recurring);
@@ -79,7 +79,7 @@ export const AddRecurringExpensesForm = ({
   const addTransaction = async (transaction: TransactionWithTag) => {
     setIsSubmitting(true);
 
-    const date = set(new Date(), { month, year, date: 1 });
+    const date = monthStart({ month, year });
 
     try {
       await upsertTransaction({
@@ -104,7 +104,7 @@ export const AddRecurringExpensesForm = ({
   const addAll = async () => {
     setIsSubmitting(true);
 
-    const date = set(new Date(), { month, year, date: 1 });
+    const date = monthStart({ month, year });
 
     const transactionsToAdd = transactions.filter(
       (t) => !addedTransactionNames.has(t.name),

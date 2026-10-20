@@ -2,7 +2,7 @@ import { AddTransactionButton } from "@/components/add-transaction-button";
 import { DataTable } from "@/components/ui/data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { db } from "@/lib/prisma";
-import { add, set } from "date-fns";
+import { dateRange, monthStart, selectedMonth } from "@/lib/date";
 import { columns } from "./_columns";
 import { MonthPicker } from "./_components/month-picker";
 
@@ -11,22 +11,11 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ board: string }>;
-  searchParams: { month?: number; year?: number };
+  searchParams: { month?: string; year?: string };
 }) {
   const board = (await params).board;
 
-  const month = searchParams.month ?? new Date().getMonth();
-  const year = searchParams.year ?? new Date().getFullYear();
-
-  const initialDate = set(new Date(), {
-    month,
-    year,
-    date: 1,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-    milliseconds: 0,
-  });
+  const initialDate = monthStart(selectedMonth(searchParams));
 
   const transactions = await db.transaction.findMany({
     include: {
@@ -34,12 +23,7 @@ export default async function Page({
     },
     where: {
       boardId: board,
-      date: {
-        gte: initialDate,
-        lt: add(initialDate, {
-          months: 1,
-        }),
-      },
+      date: dateRange(initialDate),
       recurring: false,
     },
     orderBy: {

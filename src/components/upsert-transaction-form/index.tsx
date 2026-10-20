@@ -8,8 +8,9 @@ import {
 } from "@/constants/transactions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TransactionType } from "@prisma/client";
-import { set } from "date-fns";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSelectedMonth } from "@/hooks/use-selected-month";
+import { monthStart } from "@/lib/date";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
@@ -47,7 +48,7 @@ import { UpsertTransactionFormType, upsertTransactionSchema } from "./schema";
 
 const baseFormValues = ({ month, year }: { month: number; year: number }) => ({
   amount: 0,
-  date: set(new Date(), { month, year, date: 1 }),
+  date: monthStart({ month, year }),
   name: "",
   type: TransactionType.EXPENSE,
   installments: 1,
@@ -67,13 +68,7 @@ export const UpsertTransactionForm = ({
   onSubmit?: () => void;
 }) => {
   const params = useParams();
-  const searchParams = useSearchParams();
-
-  const monthInParams = searchParams.get("month");
-  const yearInParams = searchParams.get("year");
-
-  const month = monthInParams ? +monthInParams : new Date().getMonth();
-  const year = yearInParams ? +yearInParams : new Date().getFullYear();
+  const { month, year } = useSelectedMonth();
 
   const form = useForm<UpsertTransactionFormType>({
     resolver: zodResolver(upsertTransactionSchema),
@@ -81,7 +76,7 @@ export const UpsertTransactionForm = ({
   });
 
   useEffect(() => {
-    form.setValue("date", set(new Date(), { month, year, date: 1 }));
+    form.setValue("date", monthStart({ month, year }));
   }, [month, year]);
 
   useEffect(() => {

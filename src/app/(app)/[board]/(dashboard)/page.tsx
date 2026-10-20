@@ -1,5 +1,6 @@
 import { getDashboard } from "@/actions/transactions/get-dashboard";
 import { MonthSelector } from "@/components/month-selector";
+import { selectedMonth } from "@/lib/date";
 import { ExpensesPerCategory } from "./_components/expenses-per-category";
 import { LastTransactions } from "./_components/last-transactions";
 import { TransactionsPieChart } from "./_components/transactions-pie-chart";
@@ -15,14 +16,13 @@ export default async function Dashboard({
   searchParams,
 }: {
   params: Promise<{ board: string }>;
-  searchParams: { month?: number; year?: number; visualization?: string };
+  searchParams: { month?: string; year?: string; visualization?: string };
 }) {
   const boardId = (await params).board;
 
   const dashParams = {
     boardId,
-    month: searchParams.month ?? new Date().getMonth(),
-    year: searchParams.year ?? new Date().getFullYear(),
+    ...selectedMonth(searchParams),
     visualization: (searchParams.visualization ??
       "monthly") as VisualizationType,
   };
