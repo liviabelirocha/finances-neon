@@ -13,7 +13,7 @@ type DailyBudgetResult =
   | { status: "future" }
   /** The month has no expected income yet; `suggestion` is the latest one. */
   | { status: "missing-income"; suggestion: number | null }
-  | ({ status: "ok" } & DailyBudget);
+  | ({ status: "ok"; hasSavingsRules: boolean } & DailyBudget);
 
 export const getDailyBudget = async ({
   boardId,
@@ -64,6 +64,7 @@ export const getDailyBudget = async ({
 
   return {
     status: "ok",
+    hasSavingsRules: ignoreRules.budgetIds.length > 0,
     ...buildDailyBudget({
       accounts,
       transactions,

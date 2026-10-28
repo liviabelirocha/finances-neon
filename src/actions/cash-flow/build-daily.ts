@@ -7,7 +7,7 @@ const WARNING_RATIO = 0.8;
 
 export type DayStatus = "good" | "warning" | "bad";
 
-type BudgetItemKind = "income" | "spending" | "ignored";
+export type BudgetItemKind = "income" | "spending" | "savings" | "ignored";
 
 export type IgnoreRules = { budgetIds: number[]; tagIds: number[] };
 
@@ -41,6 +41,10 @@ export type DailyBudget = {
   savedVsPace: number;
   /** What is still left of the expected income for the rest of the month. */
   remaining: number;
+  /** What should have been saved so far: received income − spent. */
+  savingsTarget: number;
+  /** What was actually moved to savings so far, net of withdrawals. */
+  savingsActual: number;
 };
 
 const dayStatus = (spent: number, available: number): DayStatus => {
@@ -65,7 +69,8 @@ export const buildDailyBudget = ({
   /** In cents. Weekly paychecks would make the budget jump if it followed
    * what was actually received, so it is fixed upfront for the month. */
   expectedIncome: number;
-  /** Money that leaves the account without being spent, like investments. */
+  /** Budgets ("metas") hold savings, like investments; tags are left out
+   * entirely, like reimbursements. */
   ignoreRules: IgnoreRules;
   year: number;
   month: number;
@@ -102,15 +107,18 @@ export const buildDailyBudget = ({
   const ignoredBudgetIds = new Set(ignoreRules.budgetIds);
   const ignoredTagIds = new Set(ignoreRules.tagIds);
 
-  // Ignored transactions stay in the day's items so they remain visible,
-  // but count as neither spending nor income.
+  // Savings and ignored transactions stay in the day's items so they remain
+  // visible, but count as neither spending nor income. An ignored tag wins
+  // over a savings budget, since it means "leave this out entirely".
   const kindOf = (transaction: AuvpTransaction): BudgetItemKind => {
-    if (
-      (transaction.budgetId !== null &&
-        ignoredBudgetIds.has(transaction.budgetId)) ||
-      transaction.tagIds.some((tagId) => ignoredTagIds.has(tagId))
-    )
+    if (transaction.tagIds.some((tagId) => ignoredTagIds.has(tagId)))
       return "ignored";
+
+    if (
+      transaction.budgetId !== null &&
+      ignoredBudgetIds.has(transaction.budgetId)
+    )
+      return "savings";
 
     return bankIds.has(transaction.accountId) && transaction.amount > 0
       ? "income"
@@ -131,10 +139,10 @@ export const buildDailyBudget = ({
       .filter((item) => item.kind === kind)
       .reduce((sum, item) => sum + item.amount, 0);
 
-  const receivedIncome = sumOf(
-    classified.map(({ item }) => item),
-    "income",
-  );
+  const allItems = classified.map(({ item }) => item);
+  const receivedIncome = sumOf(allItems, "income");
+  // Deposits are negative and withdrawals positive.
+  const savingsActual = -sumOf(allItems, "savings");
 
   let spentBefore = 0;
   // Future days share what is left evenly instead of each one assuming
@@ -181,5 +189,7 @@ export const buildDailyBudget = ({
     savedVsPace:
       Math.round((expectedIncome * elapsedDays) / lastDay) - spentBefore,
     remaining: expectedIncome - spentBefore,
+    savingsTarget: receivedIncome - spentBefore,
+    savingsActual,
   };
 };

@@ -68,7 +68,7 @@ const IgnoreSelect = ({
             aria-expanded={open}
             className="w-full justify-between font-normal"
           >
-            {selected.length ? `${selected.length} ignored` : placeholder}
+            {selected.length ? `${selected.length} selected` : placeholder}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -162,25 +162,26 @@ export const IgnoreRulesCard = ({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-2">
-          <CardTitle className="text-lg">Ignored in the daily budget</CardTitle>
+          <CardTitle className="text-lg">Daily budget rules</CardTitle>
           {isPending && <LoaderCircle className="h-4 w-4 animate-spin" />}
         </div>
         <CardDescription>
-          Transactions in these metas or with these tags don&apos;t count as
-          spending or income here, like money moved to investments. AUVP keeps
-          counting them.
+          Transactions in the savings metas count as saved, like money moved to
+          investments. Transactions with the ignored tags are left out entirely,
+          like reimbursements. Neither counts as spending or income here, and
+          AUVP keeps counting them as usual.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4 sm:grid-cols-2">
         <IgnoreSelect
-          label="Metas"
+          label="Savings metas"
           placeholder="Select metas..."
           options={budgets}
           selected={budgetIds}
           onChange={(selected) => save({ budgetIds: selected, tagIds })}
         />
         <IgnoreSelect
-          label="Tags"
+          label="Ignored tags"
           placeholder="Select tags..."
           options={tags}
           selected={tagIds}

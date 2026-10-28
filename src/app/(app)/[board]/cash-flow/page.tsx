@@ -19,6 +19,7 @@ import { CashFlowChart } from "./_components/cash-flow-chart";
 import { CashFlowTable } from "./_components/cash-flow-table";
 import { ExpectedIncomeCard } from "./_components/expected-income-card";
 import { ExpectedIncomeForm } from "./_components/expected-income-form";
+import { SavingsCard } from "./_components/savings-card";
 import { STATUS_COLOR } from "./_components/status";
 
 export default async function CashFlowPage({
@@ -139,6 +140,13 @@ export default async function CashFlowPage({
                 remaining={budget.remaining}
               />
             </div>
+
+            <SavingsCard
+              boardId={boardId}
+              hasSavingsRules={budget.hasSavingsRules}
+              savingsTarget={budget.savingsTarget}
+              savingsActual={budget.savingsActual}
+            />
 
             <CashFlowChart days={budget.days} />
             <CashFlowTable days={budget.days} today={budget.today} />

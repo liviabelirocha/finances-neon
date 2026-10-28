@@ -1,6 +1,6 @@
 "use client";
 
-import { BudgetDay } from "@/actions/cash-flow/build-daily";
+import { BudgetDay, BudgetItemKind } from "@/actions/cash-flow/build-daily";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -15,6 +15,13 @@ import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Fragment, useState } from "react";
 import { STATUS_COLOR, STATUS_LABEL } from "./status";
+
+const KIND_LABEL: Record<BudgetItemKind, string | null> = {
+  income: "income",
+  spending: null,
+  savings: "saved",
+  ignored: "ignored",
+};
 
 const Amount = ({ cents }: { cents: number }) =>
   cents === 0 ? (
@@ -113,9 +120,9 @@ export const CashFlowTable = ({
                     >
                       <TableCell colSpan={3} className="pl-10">
                         {item.description}
-                        {item.kind !== "spending" && (
+                        {KIND_LABEL[item.kind] && (
                           <Badge variant="outline" className="ml-2">
-                            {item.kind}
+                            {KIND_LABEL[item.kind]}
                           </Badge>
                         )}
                       </TableCell>
