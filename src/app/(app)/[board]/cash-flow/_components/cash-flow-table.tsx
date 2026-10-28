@@ -106,7 +106,10 @@ export const CashFlowTable = ({
                   day.items.map((item, index) => (
                     <TableRow
                       key={`${day.date}-${index}`}
-                      className="bg-white bg-opacity-5 text-sm"
+                      className={cn(
+                        "bg-white bg-opacity-5 text-sm",
+                        item.kind === "ignored" && "opacity-50",
+                      )}
                     >
                       <TableCell colSpan={3} className="pl-10">
                         {item.description}

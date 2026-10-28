@@ -3,7 +3,7 @@
 import { listAccounts, listTransactions } from "@/lib/auvp";
 import { assertBoardMember } from "@/lib/board-member";
 import { formatDayKey, monthStart, toDayKey } from "@/lib/date";
-import { getAuvpApiKey } from "@/lib/integrations";
+import { getAuvpApiKey, getAuvpIgnoreRules } from "@/lib/integrations";
 import { db } from "@/lib/prisma";
 import { addDays, endOfMonth, parseISO, subDays } from "date-fns";
 import { DailyBudget, buildDailyBudget } from "./build-daily";
@@ -53,12 +53,13 @@ export const getDailyBudget = async ({
   // AUVP may read bare dates as UTC, which is up to a day off from
   // America/Sao_Paulo; the extra day on each side is trimmed by
   // buildDailyBudget.
-  const [accounts, transactions] = await Promise.all([
+  const [accounts, transactions, ignoreRules] = await Promise.all([
     listAccounts(auvpApiKey),
     listTransactions(auvpApiKey, {
       from: formatDayKey(subDays(firstDay, 1)),
       to: formatDayKey(addDays(parseISO(to < today ? to : today), 1)),
     }),
+    getAuvpIgnoreRules(boardId),
   ]);
 
   return {
@@ -67,6 +68,7 @@ export const getDailyBudget = async ({
       accounts,
       transactions,
       expectedIncome: expectedIncome.amount,
+      ignoreRules,
       year,
       month,
     }),

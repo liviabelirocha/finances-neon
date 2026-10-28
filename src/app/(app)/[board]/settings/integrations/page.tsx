@@ -1,4 +1,6 @@
+import { getIgnoreRules } from "@/actions/integrations/get-ignore-rules";
 import { getIntegrationStatus } from "@/actions/integrations/get-status";
+import { IgnoreRulesCard } from "./_components/ignore-rules-card";
 import { IntegrationCard } from "./_components/integration-card";
 
 export default async function IntegrationsSettingsPage({
@@ -8,7 +10,10 @@ export default async function IntegrationsSettingsPage({
 }) {
   const { board: boardId } = await params;
 
-  const status = await getIntegrationStatus(boardId);
+  const [status, ignoreRules] = await Promise.all([
+    getIntegrationStatus(boardId),
+    getIgnoreRules(boardId),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -26,6 +31,23 @@ export default async function IntegrationsSettingsPage({
         description="Reads your bank accounts and transactions."
         {...status}
       />
+
+      {ignoreRules.status === "ok" && (
+        <IgnoreRulesCard
+          boardId={boardId}
+          budgets={ignoreRules.budgets}
+          tags={ignoreRules.tags}
+          budgetIds={ignoreRules.budgetIds}
+          tagIds={ignoreRules.tagIds}
+        />
+      )}
+
+      {ignoreRules.status === "unavailable" && (
+        <p className="rounded-md border p-6 text-sm text-muted-foreground">
+          Couldn&apos;t load your AUVP metas and tags, so the ignore rules
+          can&apos;t be edited right now.
+        </p>
+      )}
     </div>
   );
 }

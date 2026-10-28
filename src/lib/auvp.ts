@@ -12,8 +12,20 @@ export type AuvpTransaction = {
   date: string;
   description: string;
   accountId: number;
+  budgetId: number | null;
+  tagIds: number[];
   ignore: boolean;
   is_internal_transfer: boolean;
+};
+
+export type AuvpBudget = {
+  id: number;
+  name: string;
+};
+
+export type AuvpTag = {
+  id: number;
+  name: string;
 };
 
 export class AuvpAuthError extends Error {
@@ -49,6 +61,12 @@ const auvpFetch = async <T>(
 
 export const listAccounts = async (apiKey: string) =>
   (await auvpFetch<{ accounts: AuvpAccount[] }>(apiKey, "/accounts")).accounts;
+
+export const listBudgets = async (apiKey: string) =>
+  auvpFetch<AuvpBudget[]>(apiKey, "/budgets");
+
+export const listTags = async (apiKey: string) =>
+  (await auvpFetch<{ data: AuvpTag[] }>(apiKey, "/tags")).data;
 
 /** Only a rejected key is invalid; outages and other failures are rethrown. */
 export const validateAuvpKey = async (apiKey: string) => {

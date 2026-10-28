@@ -29,3 +29,15 @@ export const getAuvpApiKey = async (boardId: string) => {
     return null;
   }
 };
+
+export const getAuvpIgnoreRules = async (boardId: string) => {
+  const integration = await db.boardIntegration.findUnique({
+    where: { boardId },
+    select: { auvpIgnoredBudgetIds: true, auvpIgnoredTagIds: true },
+  });
+
+  return {
+    budgetIds: integration?.auvpIgnoredBudgetIds ?? [],
+    tagIds: integration?.auvpIgnoredTagIds ?? [],
+  };
+};

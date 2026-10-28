@@ -51,13 +51,16 @@ model Tag {
 }
 
 model BoardIntegration {
-  id              String    @id @default(uuid())
-  boardId         String    @unique
-  auvpApiKey      String?
-  auvpValidatedAt DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  board           Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  id                   String    @id @default(uuid())
+  boardId              String    @unique
+  auvpApiKey           String?
+  auvpValidatedAt      DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  /// AUVP tags and budgets ("metas") whose transactions the daily budget doesn't count.
+  auvpIgnoredTagIds    Int[]     @default([])
+  auvpIgnoredBudgetIds Int[]     @default([])
+  board                Board     @relation(fields: [boardId], references: [id], onDelete: Cascade)
 }
 
 /// Income the user expects to receive in a month (amount in cents); month is 0-11.

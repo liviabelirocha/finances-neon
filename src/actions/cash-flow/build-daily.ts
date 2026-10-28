@@ -7,7 +7,9 @@ const WARNING_RATIO = 0.8;
 
 export type DayStatus = "good" | "warning" | "bad";
 
-type BudgetItemKind = "income" | "spending";
+type BudgetItemKind = "income" | "spending" | "ignored";
+
+export type IgnoreRules = { budgetIds: number[]; tagIds: number[] };
 
 type BudgetItem = {
   description: string;
@@ -52,6 +54,7 @@ export const buildDailyBudget = ({
   accounts,
   transactions,
   expectedIncome,
+  ignoreRules,
   year,
   month,
   now = new Date(),
@@ -62,6 +65,8 @@ export const buildDailyBudget = ({
   /** In cents. Weekly paychecks would make the budget jump if it followed
    * what was actually received, so it is fixed upfront for the month. */
   expectedIncome: number;
+  /** Money that leaves the account without being spent, like investments. */
+  ignoreRules: IgnoreRules;
   year: number;
   month: number;
   now?: Date;
@@ -94,15 +99,30 @@ export const buildDailyBudget = ({
     );
   });
 
+  const ignoredBudgetIds = new Set(ignoreRules.budgetIds);
+  const ignoredTagIds = new Set(ignoreRules.tagIds);
+
+  // Ignored transactions stay in the day's items so they remain visible,
+  // but count as neither spending nor income.
+  const kindOf = (transaction: AuvpTransaction): BudgetItemKind => {
+    if (
+      (transaction.budgetId !== null &&
+        ignoredBudgetIds.has(transaction.budgetId)) ||
+      transaction.tagIds.some((tagId) => ignoredTagIds.has(tagId))
+    )
+      return "ignored";
+
+    return bankIds.has(transaction.accountId) && transaction.amount > 0
+      ? "income"
+      : "spending";
+  };
+
   const classified = monthTransactions.map((transaction) => ({
     date: toDayKey(transaction.date),
     item: {
       description: transaction.description,
       amount: toCents(transaction.amount),
-      kind:
-        bankIds.has(transaction.accountId) && transaction.amount > 0
-          ? "income"
-          : "spending",
+      kind: kindOf(transaction),
     } satisfies BudgetItem,
   }));
 

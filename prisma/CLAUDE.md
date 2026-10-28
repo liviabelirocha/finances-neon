@@ -31,6 +31,8 @@ Per-board AUVP integration (1:1 with Board, cascade delete).
 | boardId | String | Unique FK to Board |
 | auvpApiKey | String? | Encrypted AUVP Financeiro API key |
 | auvpValidatedAt | DateTime? | Last successful validation |
+| auvpIgnoredBudgetIds | Int[] | AUVP budget ("metas") ids the daily budget ignores (default `[]`) |
+| auvpIgnoredTagIds | Int[] | AUVP tag ids the daily budget ignores (default `[]`) |
 
 ### ExpectedIncome
 Income expected for a month — the daily budget's base (unique per board/year/month).
